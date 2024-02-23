@@ -1,2 +1,12 @@
-# open-ai-client
-rust implementation of openai-client
+# OpenAI client
+
+Supported features:
+- [ ] Audio
+- [x] Completions
+- [ ] Embeddings
+- [ ] Fine-tunning
+- [ ] Files
+- [ ] Images
+- [ ] Models
+- [ ] Moderations
+
