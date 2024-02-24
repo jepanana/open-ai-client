@@ -8,12 +8,13 @@ use crate::{
     AudioResponse, AudioTranscriptionRequest, AudioTranslationRequest, ChatCompletionRequest,
     ChatCompletionResponse, ChatCompletionStreamResponse, CreateAssistantFileRequest,
     CreateAssistantRequest, CreateFineTunningJobRequest, CreateImageRequest,
-    CreateImageVariationRequest, CreateSpeechRequest, CreateSpeechResponse, CreateThreadRequest,
-    EditImageRequest, EmbeddingRequest, EmbeddingResponse, FilesDeleteResponse, FilesListResponse,
-    FilesResponse, FilesUploadRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
-    FineTuningJobResponse, ImageResponse, ModelDataResponse, ModelsListResponse,
-    ModifyAssistantRequest, ModifyThreadRequest, OpenAIError, OpenAIStream, SortingOrder,
-    ThreadsResponse,
+    CreateImageVariationRequest, CreateMessageRequest, CreateSpeechRequest, CreateSpeechResponse,
+    CreateThreadRequest, EditImageRequest, EmbeddingRequest, EmbeddingResponse,
+    FilesDeleteResponse, FilesListResponse, FilesResponse, FilesUploadRequest,
+    FineTuningJobEventResponse, FineTuningJobListResponse, FineTuningJobResponse, ImageResponse,
+    MessagesFileListResponse, MessagesFileResponse, MessagesListResponse, MessagesResponse,
+    ModelDataResponse, ModelsListResponse, ModifyAssistantRequest, ModifyMessagesRequest,
+    ModifyThreadRequest, OpenAIError, OpenAIStream, SortingOrder, ThreadsResponse,
 };
 
 const AUDIO_CREATE_SPEECH_URL: &str = "v1/audio/speech";
@@ -32,8 +33,6 @@ const MODEL_URL: &str = "/v1/models";
 // Beta
 const ASSISTANTS_URL: &str = "/v1/assistants";
 const THREADS_URL: &str = "/v1/threads";
-// const MESSAGES_URL: &str = "/v1/threads/{}/messages";
-// const RUNS_URL: &str = "/v1/threads/{}/runs";
 
 /// OpenAI client
 #[derive(Debug, Clone)]
@@ -494,6 +493,158 @@ impl OpenAIClient {
         let _ = self.send(url, Method::DELETE).await?;
 
         Ok(())
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/messages" endpoint to create a message
+    pub async fn create_threads_message<S: Into<String>>(
+        &self,
+        thread_id: S,
+        request: CreateMessageRequest,
+    ) -> Result<MessagesResponse, OpenAIError> {
+        let url = self
+            .host
+            .join(&format!("{}/{}/messages", THREADS_URL, thread_id.into()))?;
+
+        let response = self.send_body(request, url, Method::POST).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/messages endpoint to list messages in a thread
+    pub async fn list_threads_messages<S: Into<String>>(
+        &self,
+        thread_id: S,
+        limit: Option<u32>,
+        order: Option<SortingOrder>,
+        after: Option<String>,
+        before: Option<String>,
+    ) -> Result<MessagesListResponse, OpenAIError> {
+        let mut url = self
+            .host
+            .join(&format!("{}/{}/messages", THREADS_URL, thread_id.into()))?;
+
+        if let Some(limit) = limit {
+            let _ = url
+                .query_pairs_mut()
+                .append_pair("limit", &limit.to_string());
+        }
+
+        if let Some(order) = order {
+            let _ = url
+                .query_pairs_mut()
+                .append_pair("order", &order.to_string());
+        }
+
+        if let Some(after) = after {
+            let _ = url.query_pairs_mut().append_pair("after", &after);
+        }
+
+        if let Some(before) = before {
+            let _ = url.query_pairs_mut().append_pair("before", &before);
+        }
+
+        let response = self.send(url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/messages/{message_id}/files" endpoint to retrieve files from a message
+    pub async fn list_threads_message_files<S: Into<String>>(
+        &self,
+        thread_id: S,
+        message_id: S,
+        limit: Option<u32>,
+        order: Option<SortingOrder>,
+        after: Option<String>,
+        before: Option<String>,
+    ) -> Result<MessagesFileListResponse, OpenAIError> {
+        let mut url = self.host.join(&format!(
+            "{}/{}/messages/{}/files",
+            THREADS_URL,
+            thread_id.into(),
+            message_id.into()
+        ))?;
+
+        if let Some(limit) = limit {
+            let _ = url
+                .query_pairs_mut()
+                .append_pair("limit", &limit.to_string());
+        }
+
+        if let Some(order) = order {
+            let _ = url
+                .query_pairs_mut()
+                .append_pair("order", &order.to_string());
+        }
+
+        if let Some(after) = after {
+            let _ = url.query_pairs_mut().append_pair("after", &after);
+        }
+
+        if let Some(before) = before {
+            let _ = url.query_pairs_mut().append_pair("before", &before);
+        }
+
+        let response = self.send(url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/messages/{message_id}" endpoint to retrieve a message
+    pub async fn retrieve_threads_message<S: Into<String>>(
+        &self,
+        thread_id: S,
+        message_id: S,
+    ) -> Result<MessagesResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/messages/{}",
+            THREADS_URL,
+            thread_id.into(),
+            message_id.into()
+        ))?;
+
+        let response = self.send(url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}" endpoint to retrieve a file from a message
+    pub async fn retrieve_threads_message_file<S: Into<String>>(
+        &self,
+        thread_id: S,
+        message_id: S,
+        file_id: S,
+    ) -> Result<MessagesFileResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/messages/{}/files/{}",
+            THREADS_URL,
+            thread_id.into(),
+            message_id.into(),
+            file_id.into()
+        ))?;
+
+        let response = self.send(url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/messages/{message_id}" endpoint to modify a message
+    pub async fn modify_threads_message<S: Into<String>>(
+        &self,
+        thread_id: S,
+        message_id: S,
+        request: ModifyMessagesRequest,
+    ) -> Result<MessagesResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/messages/{}",
+            THREADS_URL,
+            thread_id.into(),
+            message_id.into()
+        ))?;
+
+        let response = self.send_body(request, url, Method::POST).await;
+
+        Ok(response?.json().await?)
     }
 
     async fn send(&self, url: reqwest::Url, method: Method) -> Result<Response, OpenAIError> {
