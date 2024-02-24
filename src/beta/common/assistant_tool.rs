@@ -34,6 +34,7 @@ impl Default for CodeInterpreterTool {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RetrievalTool {
     /// The type of tool. Must be `retrieval`.
+    #[serde(rename = "type")]
     pub _type: String,
 }
 
@@ -49,6 +50,7 @@ impl Default for RetrievalTool {
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct FunctionTool {
     /// The type of tool. Must be `function`.
+    #[serde(rename = "type")]
     pub _type: String,
 
     /// The function object.
@@ -70,5 +72,6 @@ pub struct FunctionObject {
     /// and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
     ///
     /// Omitting `parameters` defines a function with an empty parameter list.
-    pub parameters: serde_json::Value,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<serde_json::Value>,
 }

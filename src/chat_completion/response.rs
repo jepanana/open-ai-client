@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    common::{ChatModel, Usage},
+    common::{ChatModel, TokenUsage},
     ChatResponseChunk,
 };
 
@@ -30,7 +30,7 @@ pub struct ChatCompletionResponse {
     pub object: String,
 
     /// Usage statistics for the completion request
-    pub usage: Usage,
+    pub usage: TokenUsage,
 }
 
 impl ChatCompletionResponse {
@@ -134,7 +134,7 @@ mod tests {
                 },
                 finish_reason: "stop".to_string(),
             }],
-            usage: Usage {
+            usage: TokenUsage {
                 prompt_tokens: 9,
                 completion_tokens: 12,
                 total_tokens: 21,

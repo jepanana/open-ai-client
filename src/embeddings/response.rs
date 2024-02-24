@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::common::{EmbeddingModel, Usage};
+use crate::common::{EmbeddingModel, TokenUsage};
 
 /// Represents an embedding vector returned by embedding endpoint.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -15,7 +15,7 @@ pub struct EmbeddingResponse {
     pub model: EmbeddingModel,
 
     /// Usage statistics for the completion request
-    pub usage: Usage,
+    pub usage: TokenUsage,
 }
 
 /// Represents embedding data returned by embedding endpoint.
@@ -69,7 +69,7 @@ mod tests {
                 index: 0,
             }],
             model: EmbeddingModel::TextEmbeddingAda002,
-            usage: Usage {
+            usage: TokenUsage {
                 prompt_tokens: 8,
                 completion_tokens: 0,
                 total_tokens: 8,

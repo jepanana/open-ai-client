@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Usage statistics for the completion request.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Usage {
+pub struct TokenUsage {
     /// Number of tokens in the prompt.
     #[serde(default)]
     pub prompt_tokens: i32,

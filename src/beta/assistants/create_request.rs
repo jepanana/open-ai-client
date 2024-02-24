@@ -38,20 +38,6 @@ pub struct CreateAssistantRequest {
     pub metadata: BTreeMap<String, String>,
 }
 
-// #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-// pub struct AssistantTool {
-//     #[serde(rename = "type")]
-//     pub _type: AssistantToolType,
-// }
-
-// #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-// #[serde(rename_all = "snake_case")]
-// pub enum AssistantToolType {
-//     CodeInterpreter,
-//     Retrieval,
-//     Function,
-// }
-
 #[cfg(test)]
 mod test {
     use serde_json::json;

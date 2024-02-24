@@ -8,13 +8,14 @@ use crate::{
     AudioResponse, AudioTranscriptionRequest, AudioTranslationRequest, ChatCompletionRequest,
     ChatCompletionResponse, ChatCompletionStreamResponse, CreateAssistantFileRequest,
     CreateAssistantRequest, CreateFineTunningJobRequest, CreateImageRequest,
-    CreateImageVariationRequest, CreateMessageRequest, CreateSpeechRequest, CreateSpeechResponse,
-    CreateThreadRequest, EditImageRequest, EmbeddingRequest, EmbeddingResponse,
-    FilesDeleteResponse, FilesListResponse, FilesResponse, FilesUploadRequest,
-    FineTuningJobEventResponse, FineTuningJobListResponse, FineTuningJobResponse, ImageResponse,
-    MessagesFileListResponse, MessagesFileResponse, MessagesListResponse, MessagesResponse,
-    ModelDataResponse, ModelsListResponse, ModifyAssistantRequest, ModifyMessagesRequest,
-    ModifyThreadRequest, OpenAIError, OpenAIStream, SortingOrder, ThreadsResponse,
+    CreateImageVariationRequest, CreateMessageRequest, CreateRunsRequest, CreateSpeechRequest,
+    CreateSpeechResponse, CreateThreadRequest, CreateThreadRunRequest, EditImageRequest,
+    EmbeddingRequest, EmbeddingResponse, FilesDeleteResponse, FilesListResponse, FilesResponse,
+    FilesUploadRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
+    FineTuningJobResponse, ImageResponse, ListRunsResponse, MessagesFileListResponse,
+    MessagesFileResponse, MessagesListResponse, MessagesResponse, ModelDataResponse,
+    ModelsListResponse, ModifyAssistantRequest, ModifyMessagesRequest, ModifyThreadRequest,
+    OpenAIError, OpenAIStream, RunsResponse, SortingOrder, ThreadsResponse,
 };
 
 const AUDIO_CREATE_SPEECH_URL: &str = "v1/audio/speech";
@@ -645,6 +646,42 @@ impl OpenAIClient {
         let response = self.send_body(request, url, Method::POST).await;
 
         Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/runs" endpoint to create a run
+    pub async fn create_run<S: Into<String>>(
+        &self,
+        request: CreateRunsRequest,
+        thread_id: S,
+    ) -> Result<RunsResponse, OpenAIError> {
+        let url = self
+            .host
+            .join(&format!("{}/{}/runs", THREADS_URL, thread_id.into()))?;
+        let response = self.send_body(request, url, Method::POST).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/runs" endpoint to create a thread and run it
+    pub async fn create_thread_run(
+        &self,
+        request: CreateThreadRunRequest,
+    ) -> Result<RunsResponse, OpenAIError> {
+        let url = self.host.join(&format!("{}/runs", ASSISTANTS_URL,))?;
+        let response = self.send_body(request, url, Method::POST).await;
+
+        Ok(response?.json().await?)
+    }
+
+    pub async fn list_runs<S: Into<String>>(
+        &self,
+        thread_id: S,
+        limit: Option<u32>,
+        order: Option<SortingOrder>,
+        after: Option<String>,
+        before: Option<String>,
+    ) -> ListRunsResponse {
+        todo!()
     }
 
     async fn send(&self, url: reqwest::Url, method: Method) -> Result<Response, OpenAIError> {
