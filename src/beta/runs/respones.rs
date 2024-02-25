@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{AssistantTool, ChatModel, TokenUsage};
+use crate::{AssistantTool, ChatModel, RunError, RunStatus, TokenUsage};
 
 /// A list of [`RunsResponse`] objects.
 pub type ListRunsResponse = Vec<RunsResponse>;
@@ -29,7 +29,7 @@ pub struct RunsResponse {
     pub status: RunStatus,
 
     /// Details on the action required to continue the run. Will be `null` if no action is required.
-    pub required_action: Option<String>,
+    pub required_action: Option<RunsAction>,
 
     /// The last error associated with this run. Will be `null` if there are no errors.
     pub last_error: RunError,
@@ -68,59 +68,6 @@ pub struct RunsResponse {
 
     /// Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
     pub usage: TokenUsage,
-}
-
-/// Represents the status of a run.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum RunStatus {
-    /// The run is queued and waiting to be executed.
-    Queued,
-
-    /// The run is in progress.
-    InProgress,
-
-    /// The run requires action to continue.
-    RequiresAction,
-
-    /// The run is in the process of being cancelled.
-    Cancelling,
-
-    /// The run was cancelled.
-    Cancelled,
-
-    /// The run failed.
-    Failed,
-
-    /// The run completed successfully.
-    Completed,
-
-    /// The run expired.
-    Expired,
-}
-
-/// Represents an error that occurred during the execution of a run.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RunError {
-    /// One of `server_error`, `rate_limit_exceeded`, or `invalid_prompt`.
-    pub code: RunErrorCode,
-
-    /// A human-readable description of the error.
-    pub message: String,
-}
-
-/// Represents the error code for a run error.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum RunErrorCode {
-    /// A server error occurred.
-    ServerError,
-
-    /// The rate limit was exceeded.
-    RateLimitExceeded,
-
-    /// The prompt provided was invalid.
-    InvalidPrompt,
 }
 
 /// Represents an action that can be taken to continue a run.

@@ -12,10 +12,11 @@ use crate::{
     CreateSpeechResponse, CreateThreadRequest, CreateThreadRunRequest, EditImageRequest,
     EmbeddingRequest, EmbeddingResponse, FilesDeleteResponse, FilesListResponse, FilesResponse,
     FilesUploadRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
-    FineTuningJobResponse, ImageResponse, ListRunsResponse, MessagesFileListResponse,
-    MessagesFileResponse, MessagesListResponse, MessagesResponse, ModelDataResponse,
-    ModelsListResponse, ModifyAssistantRequest, ModifyMessagesRequest, ModifyThreadRequest,
-    OpenAIError, OpenAIStream, RunsResponse, SortingOrder, ThreadsResponse,
+    FineTuningJobResponse, ImageResponse, ListRunsResponse, ListRunsStepsResponse,
+    MessagesFileListResponse, MessagesFileResponse, MessagesListResponse, MessagesResponse,
+    ModelDataResponse, ModelsListResponse, ModifyAssistantRequest, ModifyMessagesRequest,
+    ModifyRunsRequest, ModifyThreadRequest, OpenAIError, OpenAIStream, RunsResponse,
+    RunsStepResponse, SortingOrder, SubmitToolsRequest, ThreadsResponse,
 };
 
 const AUDIO_CREATE_SPEECH_URL: &str = "v1/audio/speech";
@@ -673,6 +674,7 @@ impl OpenAIClient {
         Ok(response?.json().await?)
     }
 
+    /// Calls the "/v1/threads/{thread_id}/runs" endpoint to list runs in a thread
     pub async fn list_runs<S: Into<String>>(
         &self,
         thread_id: S,
@@ -680,8 +682,140 @@ impl OpenAIClient {
         order: Option<SortingOrder>,
         after: Option<String>,
         before: Option<String>,
-    ) -> ListRunsResponse {
-        todo!()
+    ) -> Result<ListRunsResponse, OpenAIError> {
+        let mut url = self
+            .host
+            .join(&format!("{}/{}/runs", THREADS_URL, thread_id.into()))?;
+
+        if let Some(limit) = limit {
+            let _ = url
+                .query_pairs_mut()
+                .append_pair("limit", &limit.to_string());
+        }
+
+        if let Some(order) = order {
+            let _ = url
+                .query_pairs_mut()
+                .append_pair("order", &order.to_string());
+        }
+
+        if let Some(after) = after {
+            let _ = url.query_pairs_mut().append_pair("after", &after);
+        }
+
+        if let Some(before) = before {
+            let _ = url.query_pairs_mut().append_pair("before", &before);
+        }
+
+        let response = self.send(url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/runs/{run_id}/steps" endpoint to retrieve a run
+    pub async fn list_run_steps<S: Into<String>>(
+        &self,
+        thread_id: S,
+        run_id: S,
+    ) -> Result<ListRunsStepsResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/runs/{}/steps",
+            THREADS_URL,
+            thread_id.into(),
+            run_id.into()
+        ))?;
+        let response = self.send(url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/runs/{run_id}" endpoint to retrieve a run
+    pub async fn retrieve_run<S: Into<String>>(
+        &self,
+        thread_id: S,
+        run_id: S,
+    ) -> Result<RunsResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/runs/{}",
+            THREADS_URL,
+            thread_id.into(),
+            run_id.into()
+        ))?;
+        let response = self.send(url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}" endpoint to retrieve a run step
+    pub async fn retrieve_run_step<S: Into<String>>(
+        &self,
+        thread_id: S,
+        run_id: S,
+        step_id: S,
+    ) -> Result<RunsStepResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/runs/{}/steps/{}",
+            THREADS_URL,
+            thread_id.into(),
+            run_id.into(),
+            step_id.into()
+        ))?;
+        let response = self.send(url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/runs/{run_id}" endpoint to modify a run
+    pub async fn modify_run<S: Into<String>>(
+        &self,
+        thread_id: S,
+        run_id: S,
+        request: ModifyRunsRequest,
+    ) -> Result<RunsResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/runs/{}",
+            THREADS_URL,
+            thread_id.into(),
+            run_id.into()
+        ))?;
+        let response = self.send_body(request, url, Method::POST).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs" endpoint to submit tool outputs
+    pub async fn submit_tool_outputs_run<S: Into<String>>(
+        &self,
+        thread_id: S,
+        run_id: S,
+        request: SubmitToolsRequest,
+    ) -> Result<RunsResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/runs/{}/submit_tool_outputs",
+            THREADS_URL,
+            thread_id.into(),
+            run_id.into()
+        ))?;
+        let response = self.send_body(request, url, Method::POST).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Calls the "/v1/threads/{thread_id}/runs/{run_id}/cancel" endpoint to cancel a run
+    pub async fn cancel_run<S: Into<String>>(
+        &self,
+        thread_id: S,
+        run_id: S,
+    ) -> Result<RunsResponse, OpenAIError> {
+        let url = self.host.join(&format!(
+            "{}/{}/runs/{}/cancel",
+            THREADS_URL,
+            thread_id.into(),
+            run_id.into()
+        ))?;
+        let response = self.send(url, Method::POST).await;
+
+        Ok(response?.json().await?)
     }
 
     async fn send(&self, url: reqwest::Url, method: Method) -> Result<Response, OpenAIError> {
