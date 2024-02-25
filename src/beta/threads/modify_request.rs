@@ -12,3 +12,31 @@ pub struct ModifyThreadRequest {
     #[serde(default)]
     pub metadata: BTreeMap<String, String>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn serializes_request_correctly() {
+        let request = ModifyThreadRequest {
+            metadata: {
+                let mut map = BTreeMap::new();
+                let _ = map.insert("modified".to_string(), "true".to_string());
+                let _ = map.insert("user".to_string(), "abc123".to_string());
+                map
+            },
+        };
+
+        let expected_json = json!({
+          "metadata": {
+            "modified": "true",
+            "user": "abc123"
+          }
+        });
+
+        let serialized_request = serde_json::to_value(&request).unwrap();
+        assert_eq!(serialized_request, expected_json);
+    }
+}
