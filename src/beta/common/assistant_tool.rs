@@ -8,7 +8,7 @@ pub enum AssistantTool {
     /// Code Interpreter tool
     CodeIntepreter(CodeInterpreterTool),
     /// Retrieval tool
-    Retrival(RetrievalTool),
+    Retrieval(RetrievalTool),
 
     /// Function tool
     Function(FunctionTool),
