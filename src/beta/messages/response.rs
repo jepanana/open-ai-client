@@ -8,7 +8,7 @@ use crate::MessageRole;
 pub type MessagesListResponse = Vec<MessagesResponse>;
 
 /// Represents a message within a [thread](https://platform.openai.com/docs/api-reference/threads).
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct MessagesResponse {
     /// The identifier, which can be referenced in API endpoints.
     pub id: String,
@@ -42,16 +42,18 @@ pub struct MessagesResponse {
     /// Set of 16 key-value pairs that can be attached to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+    #[serde(default)]
     pub metadata: BTreeMap<String, String>,
 }
 
 /// The content of the [`MessageResponse`] either text and/or images.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum MessageContent {
     /// The content of the message is an image.
     File(FileMessageContent),
     /// The text content that is part of a message.
-    Text(String),
+    Text(TextMessageContent),
 }
 
 /// The content of a file message.
@@ -76,6 +78,7 @@ pub struct FileMessageContentFile {
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TextMessageContent {
     /// Always `text`.
+    #[serde(rename = "type")]
     pub _type: String,
 
     /// Text message data.
@@ -108,7 +111,9 @@ pub enum TextMessageDataAnnotation {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FileCitationAnnotation {
     /// Always `file_citation`.
+    #[serde(rename = "type")]
     pub _type: String,
+
     /// The text in the message content that needs to be replaced.
     pub text: String,
 
@@ -136,7 +141,9 @@ pub struct FileCitation {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FilePathAnnotation {
     /// Always `file_path`.
+    #[serde(rename = "type")]
     pub _type: String,
+
     /// The text in the message content that needs to be replaced.
     pub text: String,
 
@@ -155,4 +162,56 @@ pub struct FilePathAnnotation {
 pub struct FilePathData {
     /// The ID of the file that was generated.
     pub file_id: String,
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::json;
+
+    use super::*;
+
+    #[test]
+    fn deserializes_response_correctly() {
+        let json = json!({
+          "id": "msg_abc123",
+          "object": "thread.message",
+          "created_at": 1698983503,
+          "thread_id": "thread_abc123",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": {
+                "value": "Hi! How can I help you today?",
+                "annotations": []
+              }
+            }
+          ],
+          "file_ids": [],
+          "assistant_id": "asst_abc123",
+          "run_id": "run_abc123",
+        });
+
+        let response: MessagesResponse = serde_json::from_value(json).unwrap();
+
+        let expected_response = MessagesResponse {
+            id: "msg_abc123".to_string(),
+            object: "thread.message".to_string(),
+            created_at: 1698983503,
+            thread_id: "thread_abc123".to_string(),
+            role: MessageRole::Assistant,
+            content: vec![MessageContent::Text(TextMessageContent {
+                _type: "text".to_string(),
+                text: TextMessageData {
+                    value: "Hi! How can I help you today?".to_string(),
+                    ..Default::default()
+                },
+            })],
+            assistant_id: Some("asst_abc123".to_string()),
+            run_id: Some("run_abc123".to_string()),
+            ..Default::default()
+        };
+
+        assert_eq!(response, expected_response);
+    }
 }
