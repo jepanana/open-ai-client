@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Represents the status of a run.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RunStatus {
     /// The run is queued and waiting to be executed.
@@ -30,7 +30,7 @@ pub enum RunStatus {
 }
 
 /// Represents an error that occurred during the execution of a run.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RunError {
     /// One of `server_error`, `rate_limit_exceeded`, or `invalid_prompt`.
     pub code: RunErrorCode,
@@ -40,7 +40,7 @@ pub struct RunError {
 }
 
 /// Represents the error code for a run error.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RunErrorCode {
     /// A server error occurred.

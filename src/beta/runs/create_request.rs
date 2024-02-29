@@ -32,3 +32,38 @@ pub struct CreateRunsRequest {
     /// Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
     pub metadata: BTreeMap<String, String>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn serializes_request_correctly() {
+        let request = CreateRunsRequest {
+            assistant_id: "assistant-id".to_string(),
+            model: Some(ChatModel::GPT3_5Turbo0125),
+            instructions: Some("Test Assistant Instructions".to_string()),
+            additional_instructions: Some("Test Assistant Additional Instructions".to_string()),
+            tools: vec![AssistantTool::CodeIntepreter(Default::default())],
+            ..Default::default()
+        };
+
+        let request_json = serde_json::to_string(&request).unwrap();
+
+        let json = json!({
+            "assistant_id": "assistant-id",
+            "model": "gpt-3.5-turbo-0125",
+            "instructions": "Test Assistant Instructions",
+            "additional_instructions": "Test Assistant Additional Instructions",
+            "tools": [
+                {
+                    "type": "code_interpreter",
+                }
+            ],
+            "metadata": {}
+        });
+
+        assert_eq!(request_json, json.to_string());
+    }
+}
