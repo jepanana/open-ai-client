@@ -1,17 +1,16 @@
 use reqwest::{Method, Response};
 use reqwest_eventsource::{EventSource, RequestBuilderExt};
-use serde::Serialize;
 
 use crate::{
     moderations::{ModerationRequest, ModerationResponse},
     AssistantFileResponse, AssistantListResponse, AssistantsFileListResponse, AssistantsResponse,
-    AudioResponse, AudioTranscriptionRequest, AudioTranslationRequest, ChatCompletionRequest,
-    ChatCompletionResponse, ChatCompletionStreamResponse, CreateAssistantFileRequest,
-    CreateAssistantRequest, CreateFineTunningJobRequest, CreateImageRequest,
-    CreateImageVariationRequest, CreateMessageRequest, CreateRunsRequest, CreateSpeechRequest,
-    CreateSpeechResponse, CreateThreadRequest, CreateThreadRunRequest, EditImageRequest,
-    EmbeddingRequest, EmbeddingResponse, FilesDeleteResponse, FilesListResponse, FilesResponse,
-    FilesUploadRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
+    AudioResponse, AudioTranscriptionRequest, AudioTranslationRequest, BaseClient,
+    ChatCompletionRequest, ChatCompletionResponse, ChatCompletionStreamResponse,
+    CreateAssistantFileRequest, CreateAssistantRequest, CreateFineTunningJobRequest,
+    CreateImageRequest, CreateImageVariationRequest, CreateMessageRequest, CreateRunsRequest,
+    CreateSpeechRequest, CreateSpeechResponse, CreateThreadRequest, CreateThreadRunRequest,
+    EditImageRequest, EmbeddingRequest, EmbeddingResponse, FilesDeleteResponse, FilesListResponse,
+    FilesResponse, FilesUploadRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
     FineTuningJobResponse, ImageResponse, ListRunsResponse, ListRunsStepsResponse,
     MessagesFileListResponse, MessagesFileResponse, MessagesListResponse, MessagesResponse,
     ModelDataResponse, ModelsListResponse, ModifyAssistantRequest, ModifyMessagesRequest,
@@ -39,13 +38,13 @@ const THREADS_URL: &str = "/v1/threads";
 /// OpenAI client
 #[derive(Debug, Clone)]
 pub struct OpenAIClient {
-    client: reqwest::Client,
+    client: BaseClient,
     host: reqwest::Url,
 }
 
 impl OpenAIClient {
     /// Create a new OpenAI client from reqwest client and host
-    pub fn new(client: reqwest::Client, host: reqwest::Url) -> Self {
+    pub fn new(client: BaseClient, host: reqwest::Url) -> Self {
         Self { client, host }
     }
 
@@ -816,88 +815,5 @@ impl OpenAIClient {
         let response = self.send(url, Method::POST).await;
 
         Ok(response?.json().await?)
-    }
-
-    async fn send(&self, url: reqwest::Url, method: Method) -> Result<Response, OpenAIError> {
-        let response = self.client.request(method, url).send().await?;
-
-        if !response.status().is_success() {
-            let error = response.text().await?;
-            warn!(error = %error, "OpenAI responded with an error");
-
-            return Err(OpenAIError::Exception(error));
-        }
-
-        Ok(response)
-    }
-
-    async fn send_body<Q>(
-        &self,
-        request: Q,
-        url: reqwest::Url,
-        method: Method,
-    ) -> Result<Response, OpenAIError>
-    where
-        Q: Serialize + std::fmt::Debug,
-    {
-        let response = self
-            .client
-            .request(method, url)
-            .json(&request)
-            .send()
-            .await?;
-
-        if !response.status().is_success() {
-            let error = response.text().await?;
-            warn!(error = %error, "OpenAI responded with an error");
-
-            return Err(OpenAIError::Exception(error));
-        }
-
-        Ok(response)
-    }
-
-    async fn send_form<Q>(
-        &self,
-        request: Q,
-        url: reqwest::Url,
-        method: Method,
-    ) -> Result<Response, OpenAIError>
-    where
-        Q: TryInto<reqwest::multipart::Form, Error = OpenAIError> + std::fmt::Debug,
-    {
-        let response = self
-            .client
-            .request(method, url)
-            .multipart(request.try_into()?)
-            .send()
-            .await?;
-
-        if !response.status().is_success() {
-            let error = response.text().await?;
-            warn!(error = %error, "OpenAI responded with an error");
-
-            return Err(OpenAIError::Exception(error));
-        }
-
-        Ok(response)
-    }
-
-    async fn create_stream<Q>(
-        &self,
-        request: Q,
-        url: reqwest::Url,
-        method: Method,
-    ) -> Result<EventSource, OpenAIError>
-    where
-        Q: Serialize + std::fmt::Debug,
-    {
-        let response = self
-            .client
-            .request(method, url)
-            .json(&request)
-            .eventsource()?;
-
-        Ok(response)
     }
 }

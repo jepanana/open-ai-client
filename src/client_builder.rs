@@ -2,7 +2,7 @@ use std::{collections::BTreeMap, time::Duration};
 
 use reqwest::header::HeaderName;
 
-use crate::OpenAIClient;
+use crate::{BaseClient, OpenAIClient};
 
 /// A builder for [`Client`].
 #[derive(Debug)]
@@ -29,7 +29,6 @@ impl ClientBuilder {
     pub fn new(open_api_token: &str) -> Self {
         let mut headers = BTreeMap::new();
         let _ = headers.insert("Authorization".into(), format!("Bearer {}", open_api_token));
-        let _ = headers.insert("OpenAI-Beta".into(), "assistants=v1".into());
 
         Self {
             headers,
@@ -54,6 +53,15 @@ impl ClientBuilder {
         let _ = self
             .headers
             .insert("OpenAI-Organization".into(), organization.into());
+
+        self
+    }
+
+    /// Enable beta features, such as `assistants=v1`.
+    pub fn enable_beta(mut self) -> Self {
+        let _ = self
+            .headers
+            .insert("OpenAI-Beta".into(), "assistants=v1".into());
 
         self
     }
@@ -92,7 +100,8 @@ impl ClientBuilder {
             .build()?;
 
         let host = reqwest::Url::parse(&self.host)?;
+        let base_client = BaseClient::new(reqwest_client);
 
-        Ok(OpenAIClient::new(reqwest_client, host))
+        Ok(OpenAIClient::new(base_client, host))
     }
 }

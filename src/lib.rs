@@ -36,7 +36,9 @@
 #[macro_use]
 extern crate tracing;
 
+#[cfg(feature = "stable")]
 mod audio;
+mod base_client;
 mod beta;
 mod chat_completion;
 mod client;
@@ -49,17 +51,43 @@ mod images;
 mod models;
 mod moderations;
 
+#[cfg(feature = "stable")]
 pub use self::audio::*;
+
 pub use self::beta::*;
+
+#[cfg(feature = "stable")]
 pub use self::chat_completion::*;
+
+#[cfg(any(feature = "stable", feature = "beta"))]
 pub use self::common::*;
+
+#[cfg(feature = "stable")]
 pub use self::embeddings::*;
+
+#[cfg(feature = "stable")]
 pub use self::files::*;
+
+#[cfg(feature = "stable")]
 pub use self::fine_tunning::*;
+
+#[cfg(feature = "stable")]
 pub use self::images::*;
+
+#[cfg(feature = "stable")]
 pub use self::models::*;
+
+#[cfg(feature = "stable")]
 pub use self::moderations::*;
 
+#[cfg(feature = "stable")]
 pub use self::client::*;
+
+#[cfg(any(feature = "stable", feature = "beta"))]
 pub use self::client_builder::*;
+
+#[cfg(any(feature = "stable", feature = "beta"))]
+pub use self::base_client::*;
+
+#[cfg(feature = "stable")]
 pub use self::common::OpenAIError;

@@ -8,6 +8,7 @@ mod modify_request;
 mod respones;
 mod steps_response;
 mod submit_tools_request;
+mod tools;
 
 pub use self::common::*;
 pub use self::create_request::*;

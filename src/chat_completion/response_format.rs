@@ -13,9 +13,9 @@ pub struct ResponseFormat {
 #[serde(rename_all = "snake_case")]
 pub enum ResponseFormatType {
     /// Text format
-    #[default]
     Text,
 
     /// JSON format
+    #[default]
     JsonObject,
 }
