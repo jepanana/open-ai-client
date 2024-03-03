@@ -86,8 +86,5 @@ pub use self::client::*;
 #[cfg(any(feature = "stable", feature = "beta"))]
 pub use self::client_builder::*;
 
-#[cfg(any(feature = "stable", feature = "beta"))]
-pub use self::base_client::*;
-
 #[cfg(feature = "stable")]
 pub use self::common::OpenAIError;

@@ -2,7 +2,7 @@ use std::{collections::BTreeMap, time::Duration};
 
 use reqwest::header::HeaderName;
 
-use crate::{BaseClient, OpenAIClient};
+use crate::{base_client::BaseClient, OpenAIClient};
 
 /// A builder for [`Client`].
 #[derive(Debug)]
@@ -100,8 +100,8 @@ impl ClientBuilder {
             .build()?;
 
         let host = reqwest::Url::parse(&self.host)?;
-        let base_client = BaseClient::new(reqwest_client);
+        let base_client = BaseClient::new(reqwest_client, host);
 
-        Ok(OpenAIClient::new(base_client, host))
+        Ok(OpenAIClient::new(base_client))
     }
 }

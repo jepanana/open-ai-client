@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Represents policy compliance report by OpenAI's content moderation model against a given input.
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ModerationResponse {
+pub struct Response {
     /// The unique identifier for the moderation request.
     pub id: String,
 
@@ -10,26 +10,26 @@ pub struct ModerationResponse {
     pub model: String,
 
     /// A list of moderation objects.
-    pub results: Vec<ModerationResult>,
+    pub results: Vec<Result>,
 }
 
 /// Moderation object
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ModerationResult {
+pub struct Result {
     /// Whether the content violates [OpenAI's usage policies](https://platform.openai.com/policies/usage-policies).
     pub flagged: bool,
 
     /// A list of the categories, and whether they are flagged or not.
-    pub categories: ModerationCategories,
+    pub categories: Categories,
 
     /// A list of the categories along with their scores as predicted by model.
-    pub category_scores: ModerationCategoryScores,
+    pub category_scores: CategoryScores,
 }
 
 /// A category of moderated content
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
-pub struct ModerationCategories {
+pub struct Categories {
     /// Content that expresses, incites, or promotes hate based on race, gender, ethnicity, religion, nationality, sexual orientation, disability status,
     /// or caste. Hateful content aimed at non-protected groups (e.g., chess players) is harrassment.
     pub hate: bool,
@@ -77,7 +77,7 @@ pub struct ModerationCategories {
 /// Moderated content category scores
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
-pub struct ModerationCategoryScores {
+pub struct CategoryScores {
     ///The score for the category 'hate'.
     pub hate: f32,
 
@@ -169,7 +169,7 @@ mod tests {
             model: "text-moderation-005".to_string(),
             results: vec![ModerationResult {
                 flagged: true,
-                categories: ModerationCategories {
+                categories: Categories {
                     sexual: false,
                     hate: false,
                     harassment: false,
@@ -182,7 +182,7 @@ mod tests {
                     harassment_threatening: true,
                     violence: true,
                 },
-                category_scores: ModerationCategoryScores {
+                category_scores: CategoryScores {
                     sexual: 1.228_207_1e-6,
                     hate: 0.010696256,
                     harassment: 0.29842457,

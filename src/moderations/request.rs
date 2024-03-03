@@ -5,7 +5,7 @@ use crate::common::ModerationModel;
 /// Classifies if text violates OpenAI's Content Policy
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
-pub struct ModerationRequest {
+pub struct CreateRequest {
     /// The input text to classify
     pub input: String,
 
@@ -17,7 +17,7 @@ pub struct ModerationRequest {
     pub model: ModerationModel,
 }
 
-impl ModerationRequest {
+impl CreateRequest {
     /// Creates a moderation request from input
     pub fn from_input<S>(input: S) -> Self
     where

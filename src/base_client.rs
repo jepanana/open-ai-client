@@ -7,19 +7,23 @@ use crate::OpenAIError;
 
 /// A wrapper for request client
 #[derive(Debug, Clone)]
-pub struct BaseClient {
+pub(crate) struct BaseClient {
     /// The request client
     client: Client,
+
+    /// The host of the API
+    host: Url,
 }
 
 impl BaseClient {
     /// Create a new client
-    pub fn new(client: Client) -> Self {
-        Self { client }
+    pub fn new(client: Client, host: Url) -> Self {
+        Self { client, host }
     }
 
     /// Send a an API request without a body
-    pub async fn send(&self, url: Url, method: Method) -> Result<Response, OpenAIError> {
+    pub async fn send(&self, path: &str, method: Method) -> Result<Response, OpenAIError> {
+        let url = self.host.join(path.into())?;
         let response = self.client.request(method, url).send().await?;
 
         if !response.status().is_success() {
@@ -36,12 +40,14 @@ impl BaseClient {
     pub async fn send_body<Q>(
         &self,
         request: Q,
-        url: Url,
+        path: &str,
         method: Method,
     ) -> Result<Response, OpenAIError>
     where
         Q: Serialize + std::fmt::Debug,
     {
+        let url = self.host.join(path.into())?;
+
         let response = self
             .client
             .request(method, url)
@@ -63,12 +69,14 @@ impl BaseClient {
     pub async fn send_form<Q>(
         &self,
         request: Q,
-        url: Url,
+        path: &str,
         method: Method,
     ) -> Result<Response, OpenAIError>
     where
         Q: TryInto<reqwest::multipart::Form, Error = OpenAIError> + std::fmt::Debug,
     {
+        let url = self.host.join(path.into())?;
+
         let response = self
             .client
             .request(method, url)
@@ -90,12 +98,14 @@ impl BaseClient {
     pub async fn create_stream<Q>(
         &self,
         request: Q,
-        url: Url,
+        path: &str,
         method: Method,
     ) -> Result<EventSource, OpenAIError>
     where
         Q: Serialize + std::fmt::Debug,
     {
+        let url = self.host.join(path.into())?;
+
         let response = self
             .client
             .request(method, url)

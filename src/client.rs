@@ -1,8 +1,4 @@
-use reqwest::{Method, Response};
-use reqwest_eventsource::{EventSource, RequestBuilderExt};
-
 use crate::{
-    moderations::{ModerationRequest, ModerationResponse},
     AssistantFileResponse, AssistantListResponse, AssistantsFileListResponse, AssistantsResponse,
     AudioResponse, AudioTranscriptionRequest, AudioTranslationRequest, BaseClient,
     ChatCompletionRequest, ChatCompletionResponse, ChatCompletionStreamResponse,
@@ -28,7 +24,6 @@ const FILES_URL: &str = "/v1/files";
 const IMAGES_GENERATION_URL: &str = "/v1/images/generations";
 const IMAGES_EDIT_IMAGES_URL: &str = "/v1/images/edit";
 const IMAGES_VARIATIONS_URL: &str = "/v1/images/variations";
-const MODERATION_URL: &str = "/v1/moderations";
 const MODEL_URL: &str = "/v1/models";
 
 // Beta
@@ -39,13 +34,12 @@ const THREADS_URL: &str = "/v1/threads";
 #[derive(Debug, Clone)]
 pub struct OpenAIClient {
     client: BaseClient,
-    host: reqwest::Url,
 }
 
 impl OpenAIClient {
     /// Create a new OpenAI client from reqwest client and host
-    pub fn new(client: BaseClient, host: reqwest::Url) -> Self {
-        Self { client, host }
+    pub fn new(client: BaseClient) -> Self {
+        Self { client }
     }
 
     /// Calls the "/v1/chat/completions" endpoint to create chat completions
@@ -110,17 +104,6 @@ impl OpenAIClient {
     ) -> Result<AudioResponse, OpenAIError> {
         let url = self.host.join(AUDIO_TRANSLATION_URL)?;
         let response = self.send_form(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/moderations" endpoint to see if a text is safe for use
-    pub async fn moderation(
-        &self,
-        request: ModerationRequest,
-    ) -> Result<ModerationResponse, OpenAIError> {
-        let url = self.host.join(MODERATION_URL)?;
-        let response = self.send_body(request, url, Method::POST).await;
 
         Ok(response?.json().await?)
     }
