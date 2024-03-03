@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::common::ModerationModel;
 
-/// Classifies if text violates OpenAI's Content Policy
+/// Request for [`super::ModerationHandler::create`]
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct CreateRequest {
@@ -43,7 +43,7 @@ mod tests {
 
     #[test]
     fn serializes_request_correctly() {
-        let request = ModerationRequest::from_input("test");
+        let request = CreateRequest::from_input("test");
         let request_json = serde_json::to_string(&request).unwrap();
 
         let json = json!({

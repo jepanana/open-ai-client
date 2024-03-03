@@ -1,17 +1,17 @@
 use crate::{
-    AssistantFileResponse, AssistantListResponse, AssistantsFileListResponse, AssistantsResponse,
-    AudioResponse, AudioTranscriptionRequest, AudioTranslationRequest, BaseClient,
-    ChatCompletionRequest, ChatCompletionResponse, ChatCompletionStreamResponse,
-    CreateAssistantFileRequest, CreateAssistantRequest, CreateFineTunningJobRequest,
-    CreateImageRequest, CreateImageVariationRequest, CreateMessageRequest, CreateRunsRequest,
-    CreateSpeechRequest, CreateSpeechResponse, CreateThreadRequest, CreateThreadRunRequest,
-    EditImageRequest, EmbeddingRequest, EmbeddingResponse, FilesDeleteResponse, FilesListResponse,
-    FilesResponse, FilesUploadRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
-    FineTuningJobResponse, ImageResponse, ListRunsResponse, ListRunsStepsResponse,
-    MessagesFileListResponse, MessagesFileResponse, MessagesListResponse, MessagesResponse,
-    ModelDataResponse, ModelsListResponse, ModifyAssistantRequest, ModifyMessagesRequest,
-    ModifyRunsRequest, ModifyThreadRequest, OpenAIError, OpenAIStream, RunsResponse,
-    RunsStepResponse, SortingOrder, SubmitToolsRequest, ThreadsResponse,
+    moderations::CreateRequest, AssistantFileResponse, AssistantListResponse,
+    AssistantsFileListResponse, AssistantsResponse, AudioResponse, AudioTranscriptionRequest,
+    AudioTranslationRequest, ChatCompletionRequest, ChatCompletionResponse,
+    ChatCompletionStreamResponse, CreateAssistantFileRequest, CreateAssistantRequest,
+    CreateFineTunningJobRequest, CreateImageRequest, CreateImageVariationRequest,
+    CreateMessageRequest, CreateRunsRequest, CreateSpeechRequest, CreateSpeechResponse,
+    CreateThreadRequest, CreateThreadRunRequest, EditImageRequest, EmbeddingRequest,
+    EmbeddingResponse, FilesDeleteResponse, FilesListResponse, FilesResponse, FilesUploadRequest,
+    FineTuningJobEventResponse, FineTuningJobListResponse, FineTuningJobResponse, ImageResponse,
+    ListRunsResponse, ListRunsStepsResponse, MessagesFileListResponse, MessagesFileResponse,
+    MessagesListResponse, MessagesResponse, ModerationModel, ModifyAssistantRequest,
+    ModifyMessagesRequest, ModifyRunsRequest, ModifyThreadRequest, OpenAIError, OpenAIStream,
+    RunsResponse, RunsStepResponse, SortingOrder, SubmitToolsRequest, ThreadsResponse,
 };
 
 const AUDIO_CREATE_SPEECH_URL: &str = "v1/audio/speech";
@@ -47,6 +47,10 @@ impl OpenAIClient {
         &self,
         request: ChatCompletionRequest,
     ) -> Result<ChatCompletionResponse, OpenAIError> {
+        let t = CreateRequest {
+            input: "I am a bad person".to_string(),
+            model: ModerationModel::TextModerationLatest,
+        };
         let url = self.host.join(CHAT_COMPLETION_URL)?;
         let response = self.send_body(request, url, Method::POST).await;
 
@@ -106,30 +110,6 @@ impl OpenAIClient {
         let response = self.send_form(request, url, Method::POST).await;
 
         Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/models" endpoint to list OpenAI and company saved models
-    pub async fn models_list(&self) -> Result<ModelsListResponse, OpenAIError> {
-        let url = self.host.join(MODEL_URL)?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/models/{model}" endpoint to get metadata of a model
-    pub async fn model<S: Into<String>>(&self, model: S) -> Result<ModelDataResponse, OpenAIError> {
-        let url = self.host.join(&format!("{}/{}", MODEL_URL, model.into()))?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/models/{model}" endpoint to delete a model
-    pub async fn model_delete<S: Into<String>>(&self, model: S) -> Result<(), OpenAIError> {
-        let url = self.host.join(&format!("{}/{}", MODEL_URL, model.into()))?;
-        let _ = self.send(url, Method::DELETE).await;
-
-        Ok(())
     }
 
     /// Calls the "/v1/files" endpoint to list all the uploaded files

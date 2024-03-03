@@ -9,8 +9,11 @@ edition = "2021"
 default = ["stable"]
 
 full = ["stable", "beta"]
-stable = []
+stable = ["models", "moderations"]
 beta = []
+
+models = []
+moderations = []
 
 [dependencies]
 anyhow = { version = "1" }

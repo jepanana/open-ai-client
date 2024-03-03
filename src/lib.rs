@@ -48,8 +48,12 @@ mod embeddings;
 mod files;
 mod fine_tunning;
 mod images;
-mod models;
-mod moderations;
+
+#[cfg(feature = "models")]
+pub mod models;
+
+#[cfg(feature = "moderations")]
+pub mod moderations;
 
 #[cfg(feature = "stable")]
 pub use self::audio::*;
@@ -74,11 +78,11 @@ pub use self::fine_tunning::*;
 #[cfg(feature = "stable")]
 pub use self::images::*;
 
-#[cfg(feature = "stable")]
-pub use self::models::*;
+#[cfg(feature = "models")]
+pub use self::models::ModelsHandler;
 
-#[cfg(feature = "stable")]
-pub use self::moderations::*;
+#[cfg(feature = "moderations")]
+pub use self::moderations::ModerationHandler;
 
 #[cfg(feature = "stable")]
 pub use self::client::*;

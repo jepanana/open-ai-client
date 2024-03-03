@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Represents policy compliance report by OpenAI's content moderation model against a given input.
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Response {
+pub struct CreateResponse {
     /// The unique identifier for the moderation request.
     pub id: String,
 
@@ -10,12 +10,12 @@ pub struct Response {
     pub model: String,
 
     /// A list of moderation objects.
-    pub results: Vec<Result>,
+    pub results: Vec<ModerationObject>,
 }
 
 /// Moderation object
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Result {
+pub struct ModerationObject {
     /// Whether the content violates [OpenAI's usage policies](https://platform.openai.com/policies/usage-policies).
     pub flagged: bool,
 
@@ -162,12 +162,12 @@ mod tests {
           ]
         });
 
-        let response: ModerationResponse = serde_json::from_value(json).unwrap();
+        let response: CreateResponse = serde_json::from_value(json).unwrap();
 
-        let expectation = ModerationResponse {
+        let expectation = CreateResponse {
             id: "modr-XXXXX".to_string(),
             model: "text-moderation-005".to_string(),
-            results: vec![ModerationResult {
+            results: vec![ModerationObject {
                 flagged: true,
                 categories: Categories {
                     sexual: false,

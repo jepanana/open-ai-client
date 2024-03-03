@@ -2,17 +2,17 @@ use serde::{Deserialize, Serialize};
 
 /// Lists the currently available models, and provides basic information about each one such as the owner and availability.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ModelsListResponse {
+pub struct ListResponse {
     /// The object type, which is always "list".
     pub object: String,
 
     /// A list of model data.
-    pub data: Vec<ModelDataResponse>,
+    pub data: Vec<ModelObjectResponse>,
 }
 
 /// Describes an OpenAI model offering that can be used with the API.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ModelDataResponse {
+pub struct ModelObjectResponse {
     /// The model identifier, which can be referenced in the API endpoints.
     pub id: String,
 
@@ -57,24 +57,24 @@ mod tests {
           ],
         });
 
-        let response: ModelsListResponse = serde_json::from_value(json).unwrap();
+        let response: ListResponse = serde_json::from_value(json).unwrap();
 
-        let expectation = ModelsListResponse {
+        let expectation = ListResponse {
             object: "list".into(),
             data: vec![
-                ModelDataResponse {
+                ModelObjectResponse {
                     id: "model-id-0".into(),
                     object: "model".into(),
                     created: 1686935002,
                     owned_by: "organization-owner".into(),
                 },
-                ModelDataResponse {
+                ModelObjectResponse {
                     id: "model-id-1".into(),
                     object: "model".into(),
                     created: 1686935002,
                     owned_by: "organization-owner".into(),
                 },
-                ModelDataResponse {
+                ModelObjectResponse {
                     id: "model-id-2".into(),
                     object: "model".into(),
                     created: 1686935002,
