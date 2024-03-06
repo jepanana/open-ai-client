@@ -3,14 +3,15 @@
 
 mod create_speech_request;
 mod create_speech_response;
+mod create_transcription_request;
+mod create_translation_request;
+mod handler;
 mod response;
 mod response_format;
-mod transcription_request;
-mod translation_request;
 
 pub use self::create_speech_request::*;
 pub use self::create_speech_response::*;
+pub use self::create_transcription_request::*;
+pub use self::create_translation_request::*;
 pub use self::response::*;
 pub use self::response_format::ResponseFormat as AudioResponseFormat;
-pub use self::transcription_request::*;
-pub use self::translation_request::*;

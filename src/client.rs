@@ -1,11 +1,11 @@
 use crate::{
-    moderations::CreateRequest, AssistantFileResponse, AssistantListResponse,
-    AssistantsFileListResponse, AssistantsResponse, AudioResponse, AudioTranscriptionRequest,
-    AudioTranslationRequest, ChatCompletionRequest, ChatCompletionResponse,
-    ChatCompletionStreamResponse, CreateAssistantFileRequest, CreateAssistantRequest,
-    CreateFineTunningJobRequest, CreateImageRequest, CreateImageVariationRequest,
-    CreateMessageRequest, CreateRunsRequest, CreateSpeechRequest, CreateSpeechResponse,
-    CreateThreadRequest, CreateThreadRunRequest, EditImageRequest, EmbeddingRequest,
+    base_client::BaseClient, moderations::CreateRequest, AssistantFileResponse,
+    AssistantListResponse, AssistantsFileListResponse, AssistantsResponse, AudioResponse,
+    ChatCompletionRequest, ChatCompletionResponse, ChatCompletionStreamResponse,
+    CreateAssistantFileRequest, CreateAssistantRequest, CreateFineTunningJobRequest,
+    CreateImageRequest, CreateImageVariationRequest, CreateMessageRequest, CreateRunsRequest,
+    CreateSpeechRequest, CreateSpeechResponse, CreateThreadRequest, CreateThreadRunRequest,
+    CreateTranscriptionRequest, CreateTranslationRequest, EditImageRequest, EmbeddingRequest,
     EmbeddingResponse, FilesDeleteResponse, FilesListResponse, FilesResponse, FilesUploadRequest,
     FineTuningJobEventResponse, FineTuningJobListResponse, FineTuningJobResponse, ImageResponse,
     ListRunsResponse, ListRunsStepsResponse, MessagesFileListResponse, MessagesFileResponse,
@@ -75,39 +75,6 @@ impl OpenAIClient {
     ) -> Result<EmbeddingResponse, OpenAIError> {
         let url = self.host.join(EMBEDDING_URL)?;
         let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/audio/speech" endpoint to create audio speech
-    pub async fn create_speech(
-        &self,
-        request: CreateSpeechRequest,
-    ) -> Result<CreateSpeechResponse, OpenAIError> {
-        let url = self.host.join(AUDIO_CREATE_SPEECH_URL)?;
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(CreateSpeechResponse(response?.bytes().await?))
-    }
-
-    /// Calls the "/v1/audio/transcriptions" endpoint to create audio transcriptions
-    pub async fn audio_transcriptions(
-        &self,
-        request: AudioTranscriptionRequest,
-    ) -> Result<AudioResponse, OpenAIError> {
-        let url = self.host.join(AUDIO_TRANSCRIPTION_URL)?;
-        let response = self.send_form(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/audio/translations" endpoint to translate given audio
-    pub async fn audio_translations(
-        &self,
-        request: AudioTranslationRequest,
-    ) -> Result<AudioResponse, OpenAIError> {
-        let url = self.host.join(AUDIO_TRANSLATION_URL)?;
-        let response = self.send_form(request, url, Method::POST).await;
 
         Ok(response?.json().await?)
     }

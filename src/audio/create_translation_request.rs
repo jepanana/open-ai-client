@@ -8,12 +8,12 @@ use crate::{
 
 /// Translates audio into English
 #[derive(Debug)]
-pub struct AudioTranslationRequest {
+pub struct CreateTranslationRequest {
     /// The audio file object (not file name) translate, in one of these formats:
     /// flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm.
     pub file: OpenAIFile,
 
-    /// ID of the model to use. Only whisper-1 is currently available
+    /// ID of the model to use. Only `whisper-1` (which is powered by our open source Whisper V2 model) is currently available.
     pub model: AudioModel,
 
     /// An optional text to guide the model's style or continue a previous audio segment.
@@ -31,10 +31,10 @@ pub struct AudioTranslationRequest {
     pub temperature: Option<f32>,
 }
 
-impl TryFrom<AudioTranslationRequest> for reqwest::multipart::Form {
+impl TryFrom<CreateTranslationRequest> for reqwest::multipart::Form {
     type Error = OpenAIError;
 
-    fn try_from(request: AudioTranslationRequest) -> Result<Self, Self::Error> {
+    fn try_from(request: CreateTranslationRequest) -> Result<Self, Self::Error> {
         let file_name = request.file.name.to_owned();
         let file_body = Body::wrap_stream(request.file.into_stream(BytesCodec::new()));
 
