@@ -1,26 +1,22 @@
 use crate::{
     base_client::BaseClient, moderations::CreateRequest, AssistantFileResponse,
-    AssistantListResponse, AssistantsFileListResponse, AssistantsResponse, AudioResponse,
-    ChatCompletionRequest, ChatCompletionResponse, ChatCompletionStreamResponse,
-    CreateAssistantFileRequest, CreateAssistantRequest, CreateFineTunningJobRequest,
-    CreateImageRequest, CreateImageVariationRequest, CreateMessageRequest, CreateRunsRequest,
-    CreateSpeechRequest, CreateSpeechResponse, CreateThreadRequest, CreateThreadRunRequest,
-    CreateTranscriptionRequest, CreateTranslationRequest, EditImageRequest, EmbeddingRequest,
-    EmbeddingResponse, FilesDeleteResponse, FilesListResponse, FilesResponse, FilesUploadRequest,
-    FineTuningJobEventResponse, FineTuningJobListResponse, FineTuningJobResponse, ImageResponse,
-    ListRunsResponse, ListRunsStepsResponse, MessagesFileListResponse, MessagesFileResponse,
-    MessagesListResponse, MessagesResponse, ModerationModel, ModifyAssistantRequest,
-    ModifyMessagesRequest, ModifyRunsRequest, ModifyThreadRequest, OpenAIError, OpenAIStream,
-    RunsResponse, RunsStepResponse, SortingOrder, SubmitToolsRequest, ThreadsResponse,
+    AssistantListResponse, AssistantsFileListResponse, AssistantsResponse, AudioHandler,
+    AudioResponse, ChatCompletionResponse, ChatCompletionStreamResponse, ChatHandler,
+    CreateAssistantFileRequest, CreateAssistantRequest, CreateChatCompletionRequest,
+    CreateFineTunningJobRequest, CreateImageRequest, CreateImageVariationRequest,
+    CreateMessageRequest, CreateRunsRequest, CreateSpeechRequest, CreateSpeechResponse,
+    CreateThreadRequest, CreateThreadRunRequest, CreateTranscriptionRequest,
+    CreateTranslationRequest, EditImageRequest, EmbeddingHandler, EmbeddingRequest,
+    EmbeddingResponse, FileHandler, FilesDeleteResponse, FilesListResponse, FilesResponse,
+    FilesUploadRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
+    FineTuningJobResponse, ImageResponse, ListRunsResponse, ListRunsStepsResponse,
+    MessagesFileListResponse, MessagesFileResponse, MessagesListResponse, MessagesResponse,
+    ModerationModel, ModifyAssistantRequest, ModifyMessagesRequest, ModifyRunsRequest,
+    ModifyThreadRequest, OpenAIError, OpenAIStream, RunsResponse, RunsStepResponse, SortingOrder,
+    SubmitToolsRequest, ThreadsResponse,
 };
 
-const AUDIO_CREATE_SPEECH_URL: &str = "v1/audio/speech";
-const AUDIO_TRANSCRIPTION_URL: &str = "v1/audio/transcriptions";
-const AUDIO_TRANSLATION_URL: &str = "v1/audio/translations";
-const CHAT_COMPLETION_URL: &str = "/v1/chat/completions";
-const EMBEDDING_URL: &str = "/v1/embeddings";
 const FINE_TUNNING_URL: &str = "/v1/fine_tuning/jobs";
-const FILES_URL: &str = "/v1/files";
 const IMAGES_GENERATION_URL: &str = "/v1/images/generations";
 const IMAGES_EDIT_IMAGES_URL: &str = "/v1/images/edit";
 const IMAGES_VARIATIONS_URL: &str = "/v1/images/variations";
@@ -42,96 +38,32 @@ impl OpenAIClient {
         Self { client }
     }
 
-    /// Calls the "/v1/chat/completions" endpoint to create chat completions
-    pub async fn chat_completion(
-        &self,
-        request: ChatCompletionRequest,
-    ) -> Result<ChatCompletionResponse, OpenAIError> {
-        let t = CreateRequest {
-            input: "I am a bad person".to_string(),
-            model: ModerationModel::TextModerationLatest,
-        };
-        let url = self.host.join(CHAT_COMPLETION_URL)?;
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
+    /// Handles audio related operations
+    pub async fn audio(&self) -> AudioHandler {
+        AudioHandler {
+            client: &self.client,
+        }
     }
 
-    /// Calls the "/v1/chat/completions" endpoint to create chat completions streaming
-    pub async fn chat_completion_streaming(
-        &self,
-        request: ChatCompletionRequest,
-    ) -> Result<OpenAIStream<ChatCompletionStreamResponse>, OpenAIError> {
-        let url = self.host.join(CHAT_COMPLETION_URL)?;
-        let response = self.create_stream(request, url, Method::POST).await?;
-
-        Ok(OpenAIStream::new(response).await)
+    /// Handles chat related operations
+    pub async fn chat(&self) -> ChatHandler {
+        ChatHandler {
+            client: &self.client,
+        }
     }
 
-    /// Calls the "/v1/embeddings" endpoint to create embeddings for the given text
-    pub async fn embedding(
-        &self,
-        request: EmbeddingRequest,
-    ) -> Result<EmbeddingResponse, OpenAIError> {
-        let url = self.host.join(EMBEDDING_URL)?;
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
+    /// Handles moderation related operations
+    pub async fn embeddings(&self) -> EmbeddingHandler {
+        EmbeddingHandler {
+            client: &self.client,
+        }
     }
 
-    /// Calls the "/v1/files" endpoint to list all the uploaded files
-    pub async fn files_list(&self) -> Result<FilesListResponse, OpenAIError> {
-        let url = self.host.join(FILES_URL)?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/files" endpoint to upload a file
-    pub async fn files_upload(&self, request: FilesUploadRequest) -> Result<(), OpenAIError> {
-        let url = self.host.join(FILES_URL)?;
-        let response = self.send_form(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/files/{file_id}" endpoint to delete a file
-    pub async fn files_delete<S: Into<String>>(
-        &self,
-        file_id: S,
-    ) -> Result<FilesDeleteResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", FILES_URL, file_id.into()))?;
-        let response = self.send(url, Method::DELETE).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/files/{file_id}" endpoint to retrieve file metadata
-    pub async fn files_retrieve<S: Into<String>>(
-        &self,
-        file_id: S,
-    ) -> Result<FilesResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", FILES_URL, file_id.into()))?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/files/{file_id}/content" endpoint to retrieve file contents
-    pub async fn files_retrieve_content<S: Into<String>>(
-        &self,
-        file_id: S,
-    ) -> Result<String, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}/content", FILES_URL, file_id.into()))?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
+    /// Handles file related operations
+    pub async fn files(&self) -> FileHandler {
+        FileHandler {
+            client: &self.client,
+        }
     }
 
     /// Calls the "/v1/images/generations" endpoint to generate an image for a given prompt

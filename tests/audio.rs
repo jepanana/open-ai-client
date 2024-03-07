@@ -1,7 +1,7 @@
 use open_ai_client::{
-    AudioModel, AudioResponse, AudioResponseFormat, AudioTranscriptionRequest,
-    AudioTranslationRequest, CreateSpeechRequest, OpenAIClient, OpenAIFile, SpeechResponseFormat,
-    TtsModel, Voice,
+    AudioModel, AudioResponse, AudioResponseFormat, CreateSpeechRequest,
+    CreateTranscriptionRequest, CreateTranslationRequest, OpenAIClient, OpenAIFile,
+    SpeechResponseFormat, TtsModel, Voice,
 };
 
 pub async fn audio_create_speech_test(client: OpenAIClient) {
@@ -19,7 +19,7 @@ pub async fn audio_create_speech_test(client: OpenAIClient) {
 }
 
 pub async fn audio_transcriptions_test(client: OpenAIClient) {
-    let request = AudioTranscriptionRequest {
+    let request = CreateTranscriptionRequest {
         file: OpenAIFile::from_path("tests/resources/audio/one_small_step_for_man.mp3")
             .await
             .unwrap(),
@@ -43,7 +43,7 @@ pub async fn audio_transcriptions_test(client: OpenAIClient) {
 }
 
 pub async fn audio_translations_test(client: OpenAIClient) {
-    let request = AudioTranslationRequest {
+    let request = CreateTranslationRequest {
         file: OpenAIFile::from_path("tests/resources/audio/french_sample.mp3")
             .await
             .unwrap(),

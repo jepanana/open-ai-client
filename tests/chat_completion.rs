@@ -1,11 +1,11 @@
 use std::{thread, time::Duration};
 
 use open_ai_client::{
-    ChatCompletionRequest, ChatModel, ChatRequestMessage, MessageRole, OpenAIClient,
+    ChatModel, ChatRequestMessage, CreateChatCompletionRequest, MessageRole, OpenAIClient,
 };
 
 pub async fn chat_completion_test(client: OpenAIClient) {
-    let request = ChatCompletionRequest {
+    let request = CreateChatCompletionRequest {
         model: ChatModel::GPT3_5Turbo,
         messages: vec![
             ChatRequestMessage {
@@ -30,7 +30,7 @@ pub async fn chat_completion_test(client: OpenAIClient) {
 }
 
 pub async fn _chat_completion_streaming_test(client: OpenAIClient) {
-    let request = ChatCompletionRequest {
+    let request = CreateChatCompletionRequest {
         model: ChatModel::GPT3_5Turbo,
         stream: Some(true),
         messages: vec![

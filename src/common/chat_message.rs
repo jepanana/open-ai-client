@@ -36,7 +36,4 @@ pub enum MessageRole {
 
     /// Assistant
     Assistant,
-
-    /// Functions
-    Functions,
 }

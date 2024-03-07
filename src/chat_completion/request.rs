@@ -2,25 +2,24 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{common::ChatModel, ChatResponseFormat, Function, MessageRole, Tool, ToolChoice};
+use crate::{common::ChatModel, ChatResponseFormat, MessageRole, Tool, ToolChoice};
 
-///Creates a model response for the given chat conversation
+/// Request to the Chat API
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
-pub struct ChatCompletionRequest {
-    /// ID of the model to use. See the model [endpoint compatibility table](https://platform.openai.com/docs/models/model-endpoint-compatibility)
-    /// for details on which models work with the Chat API.
+pub struct CreateChatCompletionRequest {
+    /// ID of the model to use. See the [model endpoint compatibility](https://platform.openai.com/docs/models/model-endpoint-compatibility)
+    /// table for details on which models work with the Chat API.
     pub model: ChatModel,
 
     /// A list of messages comprising the conversation so far.
+    /// [Example Python code](https://cookbook.openai.com/examples/how_to_format_inputs_to_chatgpt_models).
     pub messages: Vec<ChatRequestMessage>,
-
-    /// A list of functions the model may generate JSON inputs for.
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub functions: Vec<Function>,
 
     /// Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far,
     /// decreasing the model's likelihood to repeat the same line verbatim.
+    ///
+    ///[See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub frequency_penalty: Option<f32>,
 
@@ -118,7 +117,7 @@ pub struct ChatCompletionRequest {
     pub user: Option<String>,
 }
 
-impl ChatCompletionRequest {
+impl CreateChatCompletionRequest {
     /// Creates a new [`ChatCompletionRequest`] with a single message from a given user query.
     pub fn from_user_query<S>(query: S) -> Self
     where
@@ -270,7 +269,7 @@ mod tests {
 
     #[test]
     fn serializes_request_correctly() {
-        let request = ChatCompletionRequest {
+        let request = CreateChatCompletionRequest {
             model: ChatModel::GPT3_5Turbo,
             messages: vec![
                 ChatRequestMessage {

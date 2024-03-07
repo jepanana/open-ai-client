@@ -13,5 +13,6 @@ pub use self::create_speech_request::*;
 pub use self::create_speech_response::*;
 pub use self::create_transcription_request::*;
 pub use self::create_translation_request::*;
+pub use self::handler::*;
 pub use self::response::*;
 pub use self::response_format::ResponseFormat as AudioResponseFormat;
