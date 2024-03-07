@@ -43,15 +43,20 @@ pub enum EncodingFormat {
 }
 
 /// Embedding input selection
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum EmbeddingInput {
     /// Single text input
-    #[default]
     Single(String),
 
     /// Multiple text inputs
     Multi(Vec<String>),
+}
+
+impl Default for EmbeddingInput {
+    fn default() -> Self {
+        Self::Single(String::new())
+    }
 }
 
 impl EmbeddingRequest {

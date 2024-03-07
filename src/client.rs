@@ -1,26 +1,16 @@
 use crate::{
-    base_client::BaseClient, moderations::CreateRequest, AssistantFileResponse,
-    AssistantListResponse, AssistantsFileListResponse, AssistantsResponse, AudioHandler,
-    AudioResponse, ChatCompletionResponse, ChatCompletionStreamResponse, ChatHandler,
-    CreateAssistantFileRequest, CreateAssistantRequest, CreateChatCompletionRequest,
+    base_client::BaseClient, AssistantFileResponse, AssistantListResponse,
+    AssistantsFileListResponse, AssistantsResponse, AudioHandler, ChatHandler,
+    CreateAssistantFileRequest, CreateAssistantRequest, CreateEditImageRequest,
     CreateFineTunningJobRequest, CreateImageRequest, CreateImageVariationRequest,
-    CreateMessageRequest, CreateRunsRequest, CreateSpeechRequest, CreateSpeechResponse,
-    CreateThreadRequest, CreateThreadRunRequest, CreateTranscriptionRequest,
-    CreateTranslationRequest, EditImageRequest, EmbeddingHandler, EmbeddingRequest,
-    EmbeddingResponse, FileHandler, FilesDeleteResponse, FilesListResponse, FilesResponse,
-    FilesUploadRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
-    FineTuningJobResponse, ImageResponse, ListRunsResponse, ListRunsStepsResponse,
-    MessagesFileListResponse, MessagesFileResponse, MessagesListResponse, MessagesResponse,
-    ModerationModel, ModifyAssistantRequest, ModifyMessagesRequest, ModifyRunsRequest,
-    ModifyThreadRequest, OpenAIError, OpenAIStream, RunsResponse, RunsStepResponse, SortingOrder,
-    SubmitToolsRequest, ThreadsResponse,
+    CreateMessageRequest, CreateRunsRequest, CreateThreadRequest, CreateThreadRunRequest,
+    EmbeddingHandler, FileHandler, FineTuningHandler, FineTuningJobEventResponse,
+    FineTuningJobListResponse, FineTuningJobResponse, ImageResponse, ImagesHandler,
+    ListRunsResponse, ListRunsStepsResponse, MessagesFileListResponse, MessagesFileResponse,
+    MessagesListResponse, MessagesResponse, ModifyAssistantRequest, ModifyMessagesRequest,
+    ModifyRunsRequest, ModifyThreadRequest, OpenAIError, RunsResponse, RunsStepResponse,
+    SortingOrder, SubmitToolsRequest, ThreadsResponse,
 };
-
-const FINE_TUNNING_URL: &str = "/v1/fine_tuning/jobs";
-const IMAGES_GENERATION_URL: &str = "/v1/images/generations";
-const IMAGES_EDIT_IMAGES_URL: &str = "/v1/images/edit";
-const IMAGES_VARIATIONS_URL: &str = "/v1/images/variations";
-const MODEL_URL: &str = "/v1/models";
 
 // Beta
 const ASSISTANTS_URL: &str = "/v1/assistants";
@@ -66,95 +56,16 @@ impl OpenAIClient {
         }
     }
 
-    /// Calls the "/v1/images/generations" endpoint to generate an image for a given prompt
-    pub async fn images_create(
-        &self,
-        request: CreateImageRequest,
-    ) -> Result<ImageResponse, OpenAIError> {
-        let url = self.host.join(IMAGES_GENERATION_URL)?;
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
+    pub async fn fine_tunning(&self) -> FineTuningHandler {
+        FineTuningHandler {
+            client: &self.client,
+        }
     }
 
-    /// Calls the "/v1/images/edits" endpoint to edit an image with a given prompt
-    pub async fn images_edit(
-        &self,
-        request: EditImageRequest,
-    ) -> Result<ImageResponse, OpenAIError> {
-        let url = self.host.join(IMAGES_EDIT_IMAGES_URL)?;
-        let response = self.send_form(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/images/variations" endpoint to retrieve variations for a given image
-    pub async fn images_variant(
-        &self,
-        request: CreateImageVariationRequest,
-    ) -> Result<ImageResponse, OpenAIError> {
-        let url = self.host.join(IMAGES_VARIATIONS_URL)?;
-        let response = self.send_form(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/fine_tuning/jobs" endpoint to create a fine tunning job
-    pub async fn create_fine_tunning_job(
-        &self,
-        request: CreateFineTunningJobRequest,
-    ) -> Result<FineTuningJobResponse, OpenAIError> {
-        let url = self.host.join(FINE_TUNNING_URL)?;
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/fine_tuning/jobs" endpoint to list fine tunning jobs
-    pub async fn list_fine_tunning_jobs(&self) -> Result<FineTuningJobListResponse, OpenAIError> {
-        let url = self.host.join(FINE_TUNNING_URL)?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/fine_tuning/jobs/{job_id}" endpoint to retrieve fine tunning job metadata
-    pub async fn retrieve_fine_tunning_job<S: Into<String>>(
-        &self,
-        job_id: S,
-    ) -> Result<FineTuningJobResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", FINE_TUNNING_URL, job_id.into()))?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/fine_tuning/jobs/{job_id}/cancel" endpoint to cancel a fine tunning job
-    pub async fn cancel_fine_tunning<S: Into<String>>(
-        &self,
-        job_id: S,
-    ) -> Result<FineTuningJobResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}/cancel", FINE_TUNNING_URL, job_id.into()))?;
-        let response = self.send(url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/fine_tuning/jobs/{job_id}/events" endpoint to retrieve fine tunning job events list
-    pub async fn list_fine_tunning_job_events<S: Into<String>>(
-        &self,
-        job_id: S,
-    ) -> Result<FineTuningJobEventResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}/events", FINE_TUNNING_URL, job_id.into()))?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
+    pub async fn images(&self) -> ImagesHandler {
+        ImagesHandler {
+            client: &self.client,
+        }
     }
 
     /// Calls the "/v1/assistants" endpoint to create an assistant

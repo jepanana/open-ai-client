@@ -16,8 +16,8 @@ pub struct CreateImageRequest {
     #[serde(rename = "n")]
     pub number_of_variations: Option<usize>,
 
-    /// The quality of the image that will be generated. hd creates images with finer details and greater consistency across the image.
-    /// This param is only supported for dall-e-3.
+    /// The quality of the image that will be generated. `hd` creates images with finer details and greater consistency across the image.
+    /// This param is only supported for `dall-e-3`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quality: Option<String>,
 
