@@ -17,13 +17,13 @@ pub(crate) struct BaseClient {
 
 impl BaseClient {
     /// Create a new client
-    pub fn new(client: Client, host: Url) -> Self {
+    pub(crate) fn new(client: Client, host: Url) -> Self {
         Self { client, host }
     }
 
     /// Send a an API request without a body
-    pub async fn send(&self, path: &str, method: Method) -> Result<Response, OpenAIError> {
-        let url = self.host.join(path.into())?;
+    pub(crate) async fn send(&self, path: &str, method: Method) -> Result<Response, OpenAIError> {
+        let url = self.host.join(path)?;
         let response = self.client.request(method, url).send().await?;
 
         if !response.status().is_success() {
@@ -37,7 +37,7 @@ impl BaseClient {
     }
 
     /// Send a an API request with a body
-    pub async fn send_body<Q>(
+    pub(crate) async fn send_body<Q>(
         &self,
         request: Q,
         path: &str,
@@ -46,7 +46,7 @@ impl BaseClient {
     where
         Q: Serialize + std::fmt::Debug,
     {
-        let url = self.host.join(path.into())?;
+        let url = self.host.join(path)?;
 
         let response = self
             .client
@@ -66,7 +66,7 @@ impl BaseClient {
     }
 
     /// Send a an API request with a form
-    pub async fn send_form<Q>(
+    pub(crate) async fn send_form<Q>(
         &self,
         request: Q,
         path: &str,
@@ -75,7 +75,7 @@ impl BaseClient {
     where
         Q: TryInto<reqwest::multipart::Form, Error = OpenAIError> + std::fmt::Debug,
     {
-        let url = self.host.join(path.into())?;
+        let url = self.host.join(path)?;
 
         let response = self
             .client
@@ -95,7 +95,7 @@ impl BaseClient {
     }
 
     /// Send a body to create an event stream
-    pub async fn create_stream<Q>(
+    pub(crate) async fn create_stream<Q>(
         &self,
         request: Q,
         path: &str,
@@ -104,7 +104,7 @@ impl BaseClient {
     where
         Q: Serialize + std::fmt::Debug,
     {
-        let url = self.host.join(path.into())?;
+        let url = self.host.join(path)?;
 
         let response = self
             .client

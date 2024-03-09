@@ -6,12 +6,16 @@ const MODERATION_URL: &str = "/v1/moderations";
 
 /// Moderation handler for OpenAI API
 #[derive(Debug, Clone)]
-pub struct ModerationHandler<'a> {
+pub struct ModerationsHandler<'a> {
     /// Base client
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
-impl<'a> ModerationHandler<'a> {
+impl<'a> ModerationsHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Classifies if text is potentially harmful.
     pub async fn create_moderation(
         &self,

@@ -82,7 +82,7 @@ pub use self::images::*;
 pub use self::models::ModelsHandler;
 
 #[cfg(feature = "moderations")]
-pub use self::moderations::ModerationHandler;
+pub use self::moderations::ModerationsHandler;
 
 #[cfg(feature = "stable")]
 pub use self::client::*;

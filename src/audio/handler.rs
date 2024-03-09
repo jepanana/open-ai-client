@@ -13,10 +13,14 @@ const AUDIO_TRANSLATION_URL: &str = "v1/audio/translations";
 #[derive(Debug, Clone)]
 pub struct AudioHandler<'a> {
     /// Base client
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> AudioHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Generates audio from the input text.
     pub async fn create_speech(
         &self,

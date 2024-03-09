@@ -4,12 +4,18 @@ use super::{ListResponse, ModelObjectResponse};
 
 const MODEL_URL: &str = "/v1/models";
 
+/// Models handler for OpenAI API
+#[derive(Debug, Clone)]
 pub struct ModelsHandler<'a> {
     /// Base client
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> ModelsHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Lists the currently available models, and provides basic information about each one such as the owner and availability.
     pub async fn list(&self) -> Result<ListResponse, OpenAIError> {
         let response = self.client.send(MODEL_URL, reqwest::Method::GET).await;

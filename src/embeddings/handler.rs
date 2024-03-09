@@ -7,10 +7,14 @@ const EMBEDDING_URL: &str = "/v1/embeddings";
 /// Embedding handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct EmbeddingHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> EmbeddingHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Creates an embedding vector representing the input text.
     pub async fn create_embeddings(
         &self,

@@ -10,10 +10,14 @@ const FILES_URL: &str = "/v1/files";
 /// File handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct FileHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> FileHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Returns a list of files that belong to the user's organization.
     pub async fn list_files(&self) -> Result<FilesListResponse, OpenAIError> {
         let response = self.client.send(FILES_URL, Method::GET).await;

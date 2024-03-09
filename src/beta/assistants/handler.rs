@@ -8,12 +8,17 @@ use crate::{
 
 const ASSISTANTS_URL: &str = "/v1/assistants";
 
+/// Assistants handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct AssistantsHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> AssistantsHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Create an assistant with a model and instructions.
     pub async fn create_assistant(
         &self,
@@ -121,6 +126,7 @@ impl<'a> AssistantsHandler<'a> {
         Ok(())
     }
 
+    /// Delete an assistant file.
     pub async fn delete_assistant_file<S: Into<String>>(
         &self,
         assistant_id: S,

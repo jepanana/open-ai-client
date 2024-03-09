@@ -7,12 +7,17 @@ use crate::{
 
 const THREADS_URL: &str = "/v1/threads";
 
+/// Messages handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct MessagesHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> MessagesHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Create a message.
     pub async fn create_message<S: Into<String>>(
         &self,

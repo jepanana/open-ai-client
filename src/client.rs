@@ -1,6 +1,7 @@
 use crate::{
     base_client::BaseClient, AssistantsHandler, AudioHandler, ChatHandler, EmbeddingHandler,
-    FileHandler, FineTuningHandler, ImagesHandler, MessagesHandler, RunsHandler, ThreadsHandler,
+    FileHandler, FineTuningHandler, ImagesHandler, MessagesHandler, ModelsHandler,
+    ModerationsHandler, RunsHandler, ThreadsHandler,
 };
 
 /// OpenAI client
@@ -11,71 +12,67 @@ pub struct OpenAIClient {
 
 impl OpenAIClient {
     /// Create a new OpenAI client from reqwest client and host
-    pub fn new(client: BaseClient) -> Self {
+    pub(crate) fn new(client: BaseClient) -> Self {
         Self { client }
     }
 
     /// Handles audio related operations
     pub fn audio(&self) -> AudioHandler {
-        AudioHandler {
-            client: &self.client,
-        }
+        AudioHandler::new(&self.client)
     }
 
     /// Handles chat related operations
     pub fn chat(&self) -> ChatHandler {
-        ChatHandler {
-            client: &self.client,
-        }
+        ChatHandler::new(&self.client)
     }
 
     /// Handles moderation related operations
     pub fn embeddings(&self) -> EmbeddingHandler {
-        EmbeddingHandler {
-            client: &self.client,
-        }
+        EmbeddingHandler::new(&self.client)
     }
 
     /// Handles file related operations
     pub fn files(&self) -> FileHandler {
-        FileHandler {
-            client: &self.client,
-        }
+        FileHandler::new(&self.client)
     }
 
+    /// Handles fine-tuning related operations
     pub fn fine_tunning(&self) -> FineTuningHandler {
-        FineTuningHandler {
-            client: &self.client,
-        }
+        FineTuningHandler::new(&self.client)
     }
 
+    /// Handles images related operations
     pub fn images(&self) -> ImagesHandler {
-        ImagesHandler {
-            client: &self.client,
-        }
+        ImagesHandler::new(&self.client)
     }
 
+    /// Handles models related operations
+    pub fn models(&self) -> ModelsHandler {
+        ModelsHandler::new(&self.client)
+    }
+
+    /// Handles moderation related operations
+    pub fn moderation(&self) -> ModerationsHandler {
+        ModerationsHandler::new(&self.client)
+    }
+
+    /// Handles assistants related operations
     pub fn assistants(&self) -> AssistantsHandler {
-        AssistantsHandler {
-            client: &self.client,
-        }
+        AssistantsHandler::new(&self.client)
     }
 
+    /// Handles threads related operations
     pub fn threads(&self) -> ThreadsHandler {
-        ThreadsHandler {
-            client: &self.client,
-        }
+        ThreadsHandler::new(&self.client)
     }
 
+    /// Handles messages related operations
     pub fn messages(&self) -> MessagesHandler {
-        MessagesHandler {
-            client: &self.client,
-        }
+        MessagesHandler::new(&self.client)
     }
 
+    /// Handles runs related operations
     pub fn runs(&self) -> RunsHandler {
-        RunsHandler {
-            client: &self.client,
-        }
+        RunsHandler::new(&self.client)
     }
 }

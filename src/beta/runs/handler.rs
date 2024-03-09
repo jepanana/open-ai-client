@@ -9,12 +9,17 @@ use crate::{
 const ASSISTANTS_URL: &str = "/v1/assistants";
 const THREADS_URL: &str = "/v1/threads";
 
+/// Runs handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct RunsHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> RunsHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Create a run.
     pub async fn create_run<S: Into<String>>(
         &self,

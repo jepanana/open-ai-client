@@ -236,19 +236,6 @@ impl ChatRequestMessage {
         }
     }
 
-    /// Creates a new [`ChatRequestMessage`] with the given content and function role.
-    pub fn function_message<S>(content: S, name: S) -> Self
-    where
-        S: Into<String>,
-    {
-        Self {
-            role: MessageRole::Functions,
-            content: content.into(),
-            name: Some(name.into()),
-            ..Default::default()
-        }
-    }
-
     /// Sets the function call for the message.
     pub fn set_function_call<S>(mut self, name: S, function_call: String) -> Self
     where

@@ -6,12 +6,17 @@ use crate::{
 
 const THREADS_URL: &str = "/v1/threads";
 
+/// Threads handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct ThreadsHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> ThreadsHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Create a thread.
     pub async fn create_thread(
         &self,

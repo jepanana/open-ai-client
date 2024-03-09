@@ -7,12 +7,17 @@ use crate::{
 
 const FINE_TUNNING_URL: &str = "/v1/fine_tuning/jobs";
 
+/// Fine-tuning handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct FineTuningHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> FineTuningHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Creates a fine-tuning job which begins the process of creating a new model from a given dataset.
     /// Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
     /// [Learn more about fine-tuning](https://platform.openai.com/docs/guides/fine-tuning)

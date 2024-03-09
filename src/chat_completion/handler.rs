@@ -10,10 +10,14 @@ const CHAT_COMPLETION_URL: &str = "/v1/chat/completions";
 /// Chat handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct ChatHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> ChatHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Creates a model response for the given chat conversation.
     pub async fn create_chat_completion(
         &self,

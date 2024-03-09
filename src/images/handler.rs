@@ -9,12 +9,17 @@ const IMAGES_GENERATION_URL: &str = "/v1/images/generations";
 const IMAGES_EDIT_IMAGES_URL: &str = "/v1/images/edit";
 const IMAGES_VARIATIONS_URL: &str = "/v1/images/variations";
 
+/// Images handler for OpenAI API
 #[derive(Debug, Clone)]
 pub struct ImagesHandler<'a> {
-    pub client: &'a BaseClient,
+    client: &'a BaseClient,
 }
 
 impl<'a> ImagesHandler<'a> {
+    pub(crate) fn new(client: &'a BaseClient) -> Self {
+        Self { client }
+    }
+
     /// Creates an image given a prompt.
     pub async fn create_image_request(
         &self,
