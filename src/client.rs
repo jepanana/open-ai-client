@@ -7,14 +7,10 @@ use crate::{
     EmbeddingHandler, FileHandler, FineTuningHandler, FineTuningJobEventResponse,
     FineTuningJobListResponse, FineTuningJobResponse, ImageResponse, ImagesHandler,
     ListRunsResponse, ListRunsStepsResponse, MessagesFileListResponse, MessagesFileResponse,
-    MessagesListResponse, MessagesResponse, ModifyAssistantRequest, ModifyMessagesRequest,
-    ModifyRunsRequest, ModifyThreadRequest, OpenAIError, RunsResponse, RunsStepResponse,
-    SortingOrder, SubmitToolsRequest, ThreadsResponse,
+    MessagesHandler, MessagesListResponse, MessagesResponse, ModifyAssistantRequest,
+    ModifyMessagesRequest, ModifyRunsRequest, ModifyThreadRequest, OpenAIError, RunsResponse,
+    RunsStepResponse, SortingOrder, SubmitToolsRequest, ThreadsHandler, ThreadsResponse,
 };
-
-// Beta
-const ASSISTANTS_URL: &str = "/v1/assistants";
-const THREADS_URL: &str = "/v1/threads";
 
 /// OpenAI client
 #[derive(Debug, Clone)]
@@ -29,253 +25,61 @@ impl OpenAIClient {
     }
 
     /// Handles audio related operations
-    pub async fn audio(&self) -> AudioHandler {
+    pub fn audio(&self) -> AudioHandler {
         AudioHandler {
             client: &self.client,
         }
     }
 
     /// Handles chat related operations
-    pub async fn chat(&self) -> ChatHandler {
+    pub fn chat(&self) -> ChatHandler {
         ChatHandler {
             client: &self.client,
         }
     }
 
     /// Handles moderation related operations
-    pub async fn embeddings(&self) -> EmbeddingHandler {
+    pub fn embeddings(&self) -> EmbeddingHandler {
         EmbeddingHandler {
             client: &self.client,
         }
     }
 
     /// Handles file related operations
-    pub async fn files(&self) -> FileHandler {
+    pub fn files(&self) -> FileHandler {
         FileHandler {
             client: &self.client,
         }
     }
 
-    pub async fn fine_tunning(&self) -> FineTuningHandler {
+    pub fn fine_tunning(&self) -> FineTuningHandler {
         FineTuningHandler {
             client: &self.client,
         }
     }
 
-    pub async fn images(&self) -> ImagesHandler {
+    pub fn images(&self) -> ImagesHandler {
         ImagesHandler {
             client: &self.client,
         }
     }
 
-    pub async fn assistants(&self) -> AssistantsHandler {
+    pub fn assistants(&self) -> AssistantsHandler {
         AssistantsHandler {
             client: &self.client,
         }
     }
 
-    /// Calls the "/v1/threads" endpoint to create a thread
-    pub async fn create_thread(
-        &self,
-        request: CreateThreadRequest,
-    ) -> Result<ThreadsResponse, OpenAIError> {
-        let url = self.host.join(THREADS_URL)?;
-
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/threads/{thread_id}" endpoint to retrieve a thread
-    pub async fn retrieve_thread<S: Into<String>>(
-        &self,
-        thread_id: S,
-    ) -> Result<ThreadsResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", THREADS_URL, thread_id.into()))?;
-
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/threads/{thread_id}" endpoint to modify a thread
-    pub async fn modify_thread<S: Into<String>>(
-        &self,
-        thread_id: S,
-        request: ModifyThreadRequest,
-    ) -> Result<ThreadsResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", THREADS_URL, thread_id.into()))?;
-
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/threads/{thread_id}" endpoint to delete a thread
-    pub async fn delete_thread<S: Into<String>>(&self, thread_id: S) -> Result<(), OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", THREADS_URL, thread_id.into()))?;
-
-        let _ = self.send(url, Method::DELETE).await?;
-
-        Ok(())
-    }
-
-    /// Calls the "/v1/threads/{thread_id}/messages" endpoint to create a message
-    pub async fn create_threads_message<S: Into<String>>(
-        &self,
-        thread_id: S,
-        request: CreateMessageRequest,
-    ) -> Result<MessagesResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}/messages", THREADS_URL, thread_id.into()))?;
-
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/threads/{thread_id}/messages endpoint to list messages in a thread
-    pub async fn list_threads_messages<S: Into<String>>(
-        &self,
-        thread_id: S,
-        limit: Option<u32>,
-        order: Option<SortingOrder>,
-        after: Option<String>,
-        before: Option<String>,
-    ) -> Result<MessagesListResponse, OpenAIError> {
-        let mut url = self
-            .host
-            .join(&format!("{}/{}/messages", THREADS_URL, thread_id.into()))?;
-
-        if let Some(limit) = limit {
-            let _ = url
-                .query_pairs_mut()
-                .append_pair("limit", &limit.to_string());
+    pub fn threads(&self) -> ThreadsHandler {
+        ThreadsHandler {
+            client: &self.client,
         }
-
-        if let Some(order) = order {
-            let _ = url
-                .query_pairs_mut()
-                .append_pair("order", &order.to_string());
-        }
-
-        if let Some(after) = after {
-            let _ = url.query_pairs_mut().append_pair("after", &after);
-        }
-
-        if let Some(before) = before {
-            let _ = url.query_pairs_mut().append_pair("before", &before);
-        }
-
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
     }
 
-    /// Calls the "/v1/threads/{thread_id}/messages/{message_id}/files" endpoint to retrieve files from a message
-    pub async fn list_threads_message_files<S: Into<String>>(
-        &self,
-        thread_id: S,
-        message_id: S,
-        limit: Option<u32>,
-        order: Option<SortingOrder>,
-        after: Option<String>,
-        before: Option<String>,
-    ) -> Result<MessagesFileListResponse, OpenAIError> {
-        let mut url = self.host.join(&format!(
-            "{}/{}/messages/{}/files",
-            THREADS_URL,
-            thread_id.into(),
-            message_id.into()
-        ))?;
-
-        if let Some(limit) = limit {
-            let _ = url
-                .query_pairs_mut()
-                .append_pair("limit", &limit.to_string());
+    pub fn messages(&self) -> MessagesHandler {
+        MessagesHandler {
+            client: &self.client,
         }
-
-        if let Some(order) = order {
-            let _ = url
-                .query_pairs_mut()
-                .append_pair("order", &order.to_string());
-        }
-
-        if let Some(after) = after {
-            let _ = url.query_pairs_mut().append_pair("after", &after);
-        }
-
-        if let Some(before) = before {
-            let _ = url.query_pairs_mut().append_pair("before", &before);
-        }
-
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/threads/{thread_id}/messages/{message_id}" endpoint to retrieve a message
-    pub async fn retrieve_threads_message<S: Into<String>>(
-        &self,
-        thread_id: S,
-        message_id: S,
-    ) -> Result<MessagesResponse, OpenAIError> {
-        let url = self.host.join(&format!(
-            "{}/{}/messages/{}",
-            THREADS_URL,
-            thread_id.into(),
-            message_id.into()
-        ))?;
-
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}" endpoint to retrieve a file from a message
-    pub async fn retrieve_threads_message_file<S: Into<String>>(
-        &self,
-        thread_id: S,
-        message_id: S,
-        file_id: S,
-    ) -> Result<MessagesFileResponse, OpenAIError> {
-        let url = self.host.join(&format!(
-            "{}/{}/messages/{}/files/{}",
-            THREADS_URL,
-            thread_id.into(),
-            message_id.into(),
-            file_id.into()
-        ))?;
-
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/threads/{thread_id}/messages/{message_id}" endpoint to modify a message
-    pub async fn modify_threads_message<S: Into<String>>(
-        &self,
-        thread_id: S,
-        message_id: S,
-        request: ModifyMessagesRequest,
-    ) -> Result<MessagesResponse, OpenAIError> {
-        let url = self.host.join(&format!(
-            "{}/{}/messages/{}",
-            THREADS_URL,
-            thread_id.into(),
-            message_id.into()
-        ))?;
-
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
     }
 
     /// Calls the "/v1/threads/{thread_id}/runs" endpoint to create a run

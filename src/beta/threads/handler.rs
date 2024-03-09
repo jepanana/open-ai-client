@@ -1,0 +1,59 @@
+use reqwest::Method;
+
+use crate::{
+    base_client::BaseClient, CreateThreadRequest, ModifyThreadRequest, OpenAIError, ThreadsResponse,
+};
+
+const THREADS_URL: &str = "/v1/threads";
+
+#[derive(Debug, Clone)]
+pub struct ThreadsHandler<'a> {
+    pub client: &'a BaseClient,
+}
+
+impl<'a> ThreadsHandler<'a> {
+    /// Create a thread.
+    pub async fn create_thread(
+        &self,
+        request: CreateThreadRequest,
+    ) -> Result<ThreadsResponse, OpenAIError> {
+        let response = self
+            .client
+            .send_body(request, THREADS_URL, Method::POST)
+            .await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Retrieves a thread.
+    pub async fn retrieve_thread<S: Into<String>>(
+        &self,
+        thread_id: S,
+    ) -> Result<ThreadsResponse, OpenAIError> {
+        let url = format!("{}/{}", THREADS_URL, thread_id.into());
+        let response = self.client.send(&url, Method::GET).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Modifies a thread.
+    pub async fn modify_thread<S: Into<String>>(
+        &self,
+        thread_id: S,
+        request: ModifyThreadRequest,
+    ) -> Result<ThreadsResponse, OpenAIError> {
+        let url = format!("{}/{}", THREADS_URL, thread_id.into());
+
+        let response = self.client.send_body(request, &url, Method::POST).await;
+
+        Ok(response?.json().await?)
+    }
+
+    /// Delete a thread.
+    pub async fn delete_thread<S: Into<String>>(&self, thread_id: S) -> Result<(), OpenAIError> {
+        let url = format!("{}/{}", THREADS_URL, thread_id.into());
+        let _ = self.client.send(&url, Method::DELETE).await?;
+
+        Ok(())
+    }
+}

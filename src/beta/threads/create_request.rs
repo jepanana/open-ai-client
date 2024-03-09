@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ThreadMessage;
 
-/// Create a thread.
+/// Request for creating a thread.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct CreateThreadRequest {

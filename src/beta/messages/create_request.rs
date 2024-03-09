@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::MessageRole;
 
-/// Create a message in a thread.
+/// Request for creating a message.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct CreateMessageRequest {
     /// The role of the entity that is creating the message. Currently only `user` is supported.
