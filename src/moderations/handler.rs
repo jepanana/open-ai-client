@@ -1,6 +1,6 @@
 use crate::{base_client::BaseClient, OpenAIError};
 
-use super::{request::CreateRequest, response::CreateResponse};
+use super::{request::CreateModerationRequest, response::CreateResponse};
 
 const MODERATION_URL: &str = "/v1/moderations";
 
@@ -13,7 +13,10 @@ pub struct ModerationHandler<'a> {
 
 impl<'a> ModerationHandler<'a> {
     /// Classifies if text is potentially harmful.
-    pub async fn create(&self, request: CreateRequest) -> Result<CreateResponse, OpenAIError> {
+    pub async fn create_moderation(
+        &self,
+        request: CreateModerationRequest,
+    ) -> Result<CreateResponse, OpenAIError> {
         let response = self
             .client
             .send_body(request, MODERATION_URL, reqwest::Method::POST)

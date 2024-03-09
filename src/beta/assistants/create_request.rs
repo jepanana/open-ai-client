@@ -6,7 +6,7 @@ use crate::{AssistantTool, ChatModel};
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
-/// Create an assistant with a model and instructions.
+/// Request for create an assistant API.
 pub struct CreateAssistantRequest {
     /// ID of the model to use. You can use the List [`crate::models`] API to see all of your available models,
     /// or see our [Model](https://platform.openai.com/docs/models/overview) overview for descriptions of them.

@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-/// Create an assistant file by attaching a [File](https://platform.openai.com/docs/api-reference/files)
-/// to an [assistant](https://platform.openai.com/docs/api-reference/assistants).
+/// Request for create an assistant file API.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct CreateAssistantFileRequest {
     /// A [File](https://platform.openai.com/docs/api-reference/files) ID (with `purpose="assistants"`)

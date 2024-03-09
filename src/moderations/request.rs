@@ -5,7 +5,7 @@ use crate::common::ModerationModel;
 /// Request for [`super::ModerationHandler::create`]
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(default)]
-pub struct CreateRequest {
+pub struct CreateModerationRequest {
     /// The input text to classify
     pub input: String,
 
@@ -17,7 +17,7 @@ pub struct CreateRequest {
     pub model: ModerationModel,
 }
 
-impl CreateRequest {
+impl CreateModerationRequest {
     /// Creates a moderation request from input
     pub fn from_input<S>(input: S) -> Self
     where
@@ -43,7 +43,7 @@ mod tests {
 
     #[test]
     fn serializes_request_correctly() {
-        let request = CreateRequest::from_input("test");
+        let request = CreateModerationRequest::from_input("test");
         let request_json = serde_json::to_string(&request).unwrap();
 
         let json = json!({

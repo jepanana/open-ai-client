@@ -1,6 +1,6 @@
 use crate::{
     base_client::BaseClient, AssistantFileResponse, AssistantListResponse,
-    AssistantsFileListResponse, AssistantsResponse, AudioHandler, ChatHandler,
+    AssistantsFileListResponse, AssistantsHandler, AssistantsResponse, AudioHandler, ChatHandler,
     CreateAssistantFileRequest, CreateAssistantRequest, CreateEditImageRequest,
     CreateFineTunningJobRequest, CreateImageRequest, CreateImageVariationRequest,
     CreateMessageRequest, CreateRunsRequest, CreateThreadRequest, CreateThreadRunRequest,
@@ -68,153 +68,10 @@ impl OpenAIClient {
         }
     }
 
-    /// Calls the "/v1/assistants" endpoint to create an assistant
-    pub async fn create_assistant(
-        &self,
-        request: CreateAssistantRequest,
-    ) -> Result<AssistantsResponse, OpenAIError> {
-        let url = self.host.join(ASSISTANTS_URL)?;
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/assistants/{assistant_id}/files" endpoint to create an assistant file
-    pub async fn create_assistant_file<S: Into<String>>(
-        &self,
-        assistant_id: S,
-        request: CreateAssistantFileRequest,
-    ) -> Result<AssistantFileResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}/files", ASSISTANTS_URL, assistant_id.into()))?;
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/assistants" endpoint to list assistants
-    pub async fn list_assistants(&self) -> Result<AssistantListResponse, OpenAIError> {
-        let url = self.host.join(ASSISTANTS_URL)?;
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/assistants/{assistant_id}/files" endpoint to list assistant files
-    pub async fn list_assistants_file<S: Into<String>>(
-        &self,
-        assistant_id: S,
-        limit: Option<u32>,
-        order: Option<SortingOrder>,
-        after: Option<String>,
-        before: Option<String>,
-    ) -> Result<AssistantsFileListResponse, OpenAIError> {
-        let mut url =
-            self.host
-                .join(&format!("{}/{}/files", ASSISTANTS_URL, assistant_id.into()))?;
-
-        if let Some(limit) = limit {
-            let _ = url
-                .query_pairs_mut()
-                .append_pair("limit", &limit.to_string());
+    pub async fn assistants(&self) -> AssistantsHandler {
+        AssistantsHandler {
+            client: &self.client,
         }
-
-        if let Some(order) = order {
-            let _ = url
-                .query_pairs_mut()
-                .append_pair("order", &order.to_string());
-        }
-
-        if let Some(after) = after {
-            let _ = url.query_pairs_mut().append_pair("after", &after);
-        }
-
-        if let Some(before) = before {
-            let _ = url.query_pairs_mut().append_pair("before", &before);
-        }
-
-        let response = self.send(url, Method::GET).await;
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/assistants/{assistant_id}" endpoint to retrieve an assistant
-    pub async fn retrieve_assistant<S: Into<String>>(
-        &self,
-        assistant_id: S,
-    ) -> Result<AssistantsResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", ASSISTANTS_URL, assistant_id.into()))?;
-
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/assistants/{assistant_id}/files/{file_id}" endpoint to retrieve an assistant file
-    pub async fn retrieve_assistant_file<S: Into<String>>(
-        &self,
-        assistant_id: S,
-        file_id: S,
-    ) -> Result<AssistantFileResponse, OpenAIError> {
-        let url = self.host.join(&format!(
-            "{}/{}/files/{}",
-            ASSISTANTS_URL,
-            assistant_id.into(),
-            file_id.into()
-        ))?;
-
-        let response = self.send(url, Method::GET).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/assistants/{assistant_id}" endpoint to modify an assistant
-    pub async fn modify_assistant<S: Into<String>>(
-        &self,
-        assistant_id: S,
-        request: ModifyAssistantRequest,
-    ) -> Result<AssistantsResponse, OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", ASSISTANTS_URL, assistant_id.into()))?;
-
-        let response = self.send_body(request, url, Method::POST).await;
-
-        Ok(response?.json().await?)
-    }
-
-    /// Calls the "/v1/assistants/{assistant_id}" endpoint to delete an assistant
-    pub async fn delete_assistant<S: Into<String>>(
-        &self,
-        assistant_id: S,
-    ) -> Result<(), OpenAIError> {
-        let url = self
-            .host
-            .join(&format!("{}/{}", ASSISTANTS_URL, assistant_id.into()))?;
-
-        let _ = self.send(url, Method::DELETE).await?;
-
-        Ok(())
-    }
-
-    /// Calls the "/v1/assistants/{assistant_id}/files/{file_id}" endpoint to delete an assistant file
-    pub async fn delete_assistant_file<S: Into<String>>(
-        &self,
-        assistant_id: S,
-        file_id: S,
-    ) -> Result<(), OpenAIError> {
-        let url = self.host.join(&format!(
-            "{}/{}/files/{}",
-            ASSISTANTS_URL,
-            assistant_id.into(),
-            file_id.into()
-        ))?;
-
-        let _ = self.send(url, Method::DELETE).await;
-
-        Ok(())
     }
 
     /// Calls the "/v1/threads" endpoint to create a thread
