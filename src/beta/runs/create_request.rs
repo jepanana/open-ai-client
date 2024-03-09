@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{AssistantTool, ChatModel};
 
-/// Create a run.
+/// Request to create a run.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct CreateRunsRequest {
     /// The ID of the [assistant](https://platform.openai.com/docs/api-reference/assistants) to use to execute this run.

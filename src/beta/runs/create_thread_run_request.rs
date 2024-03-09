@@ -4,9 +4,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::{AssistantTool, ChatModel, CreateThreadRequest};
 
-/// Create a thread and run it in one request.
+/// Request to create a thread and run it.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct CreateThreadRunRequest {
+pub struct CreateThreadAndRunRequest {
     /// The ID of the [assistant](https://platform.openai.com/docs/api-reference/assistants) to use to execute this run.
     pub assistant_id: String,
 
@@ -43,7 +43,7 @@ mod tests {
 
     #[test]
     fn serializes_request_correctly() {
-        let request = CreateThreadRunRequest {
+        let request = CreateThreadAndRunRequest {
             assistant_id: "asst_abc123".to_string(),
             thread: CreateThreadRequest {
                 messages: vec![ThreadMessage {

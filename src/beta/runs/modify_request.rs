@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-/// Modify a run.
+/// Request to modify a run.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct ModifyRunsRequest {
     /// Set of 16 key-value pairs that can be attached to an object.

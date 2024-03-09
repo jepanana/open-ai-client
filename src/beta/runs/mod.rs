@@ -4,6 +4,7 @@
 mod common;
 mod create_request;
 mod create_thread_run_request;
+mod handler;
 mod modify_request;
 mod respones;
 mod steps_response;
@@ -13,6 +14,7 @@ mod tools;
 pub use self::common::*;
 pub use self::create_request::*;
 pub use self::create_thread_run_request::*;
+pub use self::handler::*;
 pub use self::modify_request::*;
 pub use self::respones::*;
 pub use self::steps_response::*;
