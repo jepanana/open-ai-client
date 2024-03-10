@@ -12,6 +12,13 @@ pub struct ModifyMessagesRequest {
     pub metadata: BTreeMap<String, String>,
 }
 
+impl ModifyMessagesRequest {
+    /// Creates a new instance of the request.
+    pub fn with_metadata(metadata: BTreeMap<String, String>) -> Self {
+        Self { metadata }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;

@@ -249,7 +249,7 @@ impl ChatRequestMessage {
 
 #[cfg(test)]
 mod tests {
-    use crate::{FunctionChoice, ToolChoiceObject, ToolType};
+    use crate::{FunctionChoice, ToolChoiceObject};
 
     use super::*;
     use serde_json::json;

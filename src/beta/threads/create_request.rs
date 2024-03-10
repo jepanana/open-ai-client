@@ -19,6 +19,12 @@ pub struct CreateThreadRequest {
 }
 
 impl CreateThreadRequest {
+    /// Creates a new empty thread request.
+    pub fn empty() -> Self {
+        Self {
+            ..Default::default()
+        }
+    }
     /// Creates a new instance of the request with the provided messages.
     pub fn with_messages(messages: Vec<ThreadMessage>) -> Self {
         Self {
