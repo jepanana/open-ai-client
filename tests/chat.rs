@@ -23,7 +23,7 @@ pub async fn chat_completion_test(client: OpenAIClient) {
         ..Default::default()
     };
 
-    let result = client.chat().chat_completion(request).await.unwrap();
+    let result = client.chat().create_chat_completion(request).await.unwrap();
 
     assert!(!result.choices.is_empty());
     assert_eq!(result.first_message().unwrap(), "Yes.");

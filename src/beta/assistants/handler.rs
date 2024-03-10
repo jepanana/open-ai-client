@@ -3,7 +3,8 @@ use reqwest::Method;
 use crate::{
     base_client::BaseClient, AssistantFileResponse, AssistantListResponse,
     AssistantsFileListResponse, AssistantsResponse, CreateAssistantFileRequest,
-    CreateAssistantRequest, ModifyAssistantRequest, OpenAIError, SortingOrder,
+    CreateAssistantRequest, DeleteAssistantResponse, ModifyAssistantRequest, OpenAIError,
+    SortingOrder,
 };
 
 const ASSISTANTS_URL: &str = "/v1/assistants";
@@ -118,12 +119,12 @@ impl<'a> AssistantsHandler<'a> {
     pub async fn delete_assistant<S: Into<String>>(
         &self,
         assistant_id: S,
-    ) -> Result<(), OpenAIError> {
+    ) -> Result<DeleteAssistantResponse, OpenAIError> {
         let url = format!("{}/{}", ASSISTANTS_URL, assistant_id.into());
 
-        let _ = self.client.send(&url, Method::DELETE).await?;
+        let response = self.client.send(&url, Method::DELETE).await;
 
-        Ok(())
+        Ok(response?.json().await?)
     }
 
     /// Delete an assistant file.

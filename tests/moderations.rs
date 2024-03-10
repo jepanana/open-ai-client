@@ -1,7 +1,7 @@
-use open_ai_client::{ModerationRequest, OpenAIClient};
+use open_ai_client::{moderations::CreateModerationRequest, OpenAIClient};
 
 pub async fn moderations_test(client: OpenAIClient) {
-    let request = ModerationRequest {
+    let request = CreateModerationRequest {
         input: "This is a sexually explicit text. A nude person".to_string(),
         ..Default::default()
     };

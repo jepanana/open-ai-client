@@ -5,7 +5,14 @@ use serde::{Deserialize, Serialize};
 use crate::{AssistantTool, ChatModel};
 
 /// A list of [`super::AssistantsResponse`]
-pub type AssistantListResponse = Vec<AssistantsResponse>;
+#[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
+pub struct AssistantListResponse {
+    /// The object type, which is always list.
+    pub object: String,
+
+    /// A list of [`AssistantsResponse`].
+    pub data: Vec<AssistantsResponse>,
+}
 
 /// Represents an `assistant` that can call the model and use tools.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]

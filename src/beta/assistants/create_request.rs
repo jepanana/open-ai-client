@@ -40,6 +40,17 @@ pub struct CreateAssistantRequest {
     pub metadata: BTreeMap<String, String>,
 }
 
+impl CreateAssistantRequest {
+    /// Create a new assistant request.
+    pub fn with_instructions<S: Into<String>>(model: ChatModel, instructions: S) -> Self {
+        Self {
+            model,
+            instructions: Some(instructions.into()),
+            ..Default::default()
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use serde_json::json;
