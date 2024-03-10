@@ -40,7 +40,7 @@ extern crate tracing;
 mod audio;
 mod base_client;
 mod beta;
-mod chat_completion;
+mod chat;
 mod client;
 mod client_builder;
 mod common;
@@ -61,7 +61,7 @@ pub use self::audio::*;
 pub use self::beta::*;
 
 #[cfg(feature = "stable")]
-pub use self::chat_completion::*;
+pub use self::chat::*;
 
 #[cfg(any(feature = "stable", feature = "beta"))]
 pub use self::common::*;

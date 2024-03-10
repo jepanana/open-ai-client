@@ -270,14 +270,7 @@ mod tests {
                     ..Default::default()
                 },
             ],
-            tools: vec![Tool {
-                _type: ToolType::Function,
-                function: Function {
-                    name: "my_function".to_string(),
-                    description: None,
-                    ..Default::default()
-                },
-            }],
+            tools: vec![],
             tool_choice: Some(ToolChoice::Object(ToolChoiceObject {
                 _type: Some("function".to_string()),
                 function: Some(FunctionChoice {
@@ -301,18 +294,7 @@ mod tests {
               "content": "Hello!"
             }
           ],
-          "tools": [
-            {
-              "type": "function",
-              "function": {
-                "name": "my_function",
-                "parameters": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            }
-          ],
+          "tools": [],
           "tool_choice": {
             "type": "function",
             "function": {

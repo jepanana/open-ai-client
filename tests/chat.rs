@@ -23,7 +23,7 @@ pub async fn chat_completion_test(client: OpenAIClient) {
         ..Default::default()
     };
 
-    let result = client.chat_completion(request).await.unwrap();
+    let result = client.chat().chat_completion(request).await.unwrap();
 
     assert!(!result.choices.is_empty());
     assert_eq!(result.first_message().unwrap(), "Yes.");
@@ -49,7 +49,11 @@ pub async fn _chat_completion_streaming_test(client: OpenAIClient) {
         ..Default::default()
     };
 
-    let mut stream = client.chat_completion_streaming(request).await.unwrap();
+    let mut stream = client
+        .chat()
+        .create_chat_completion_streaming(request)
+        .await
+        .unwrap();
 
     let mut messages = vec![];
 

@@ -4,11 +4,14 @@ pub async fn embeddings_test(client: OpenAIClient) {
     let request = EmbeddingRequest {
         model: EmbeddingModel::TextEmbeddingAda002,
         input: EmbeddingInput::Single("The food was delicious.".to_string()),
-        encoding_format: None,
-        user: None,
+        ..Default::default()
     };
 
-    let result = client.embedding(request).await.unwrap();
+    let result = client
+        .embeddings()
+        .create_embeddings(request)
+        .await
+        .unwrap();
 
     assert!(!result.data.is_empty());
     assert_eq!(result.data.first().unwrap().embedding.len(), 1536);

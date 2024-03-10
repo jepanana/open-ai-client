@@ -13,7 +13,7 @@ pub async fn audio_create_speech_test(client: OpenAIClient) {
         speed: Some(1.0),
     };
 
-    let result = client.create_speech(request).await.unwrap();
+    let result = client.audio().create_speech(request).await.unwrap();
 
     assert!(!result.0.is_empty());
 }
@@ -30,7 +30,7 @@ pub async fn audio_transcriptions_test(client: OpenAIClient) {
         language: Some("en".to_string()),
     };
 
-    let result = client.audio_transcriptions(request).await.unwrap();
+    let result = client.audio().create_transcription(request).await.unwrap();
 
     let expected = AudioResponse {
         text: "I'm at the foot of the ladder. The lamb foot pads are only depressed in the surface about one or two inches, \
@@ -53,7 +53,7 @@ pub async fn audio_translations_test(client: OpenAIClient) {
         temperature: None,
     };
 
-    let result = client.audio_translations(request).await.unwrap();
+    let result = client.audio().create_translations(request).await.unwrap();
 
     let expected = AudioResponse {
         text: "The first time you open a Customer Interaction, you will be directed to the Identification page. \

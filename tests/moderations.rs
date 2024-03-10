@@ -6,7 +6,11 @@ pub async fn moderations_test(client: OpenAIClient) {
         ..Default::default()
     };
 
-    let result = client.moderation(request).await.unwrap();
+    let result = client
+        .moderation()
+        .create_moderation(request)
+        .await
+        .unwrap();
 
     assert!(!result.results.is_empty());
     assert!(result.results.first().unwrap().flagged);

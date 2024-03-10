@@ -2,8 +2,9 @@ use std::time::Duration;
 
 use open_ai_client::{ClientBuilder, OpenAIClient};
 
+mod assistants;
 mod audio;
-mod chat_completion;
+mod chat;
 mod embeddings;
 mod models;
 mod moderations;
@@ -37,7 +38,7 @@ async fn audio_translations() {
 #[tokio::test]
 async fn chat_completion() {
     let client = create_client();
-    chat_completion::chat_completion_test(client).await;
+    chat::chat_completion_test(client).await;
 }
 
 // Not sure how to fix this yet, but the test works if one awaits it
@@ -63,4 +64,10 @@ async fn models() {
 async fn moderation() {
     let client = create_client();
     moderations::moderations_test(client).await;
+}
+
+#[tokio::test]
+async fn assistant() {
+    let client = create_client();
+    assistants::assistants_test(client).await;
 }
