@@ -13,6 +13,13 @@ pub struct ModifyThreadRequest {
     pub metadata: BTreeMap<String, String>,
 }
 
+impl ModifyThreadRequest {
+    /// Creates a new instance of the request.
+    pub fn with_metadata(metadata: BTreeMap<String, String>) -> Self {
+        Self { metadata }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

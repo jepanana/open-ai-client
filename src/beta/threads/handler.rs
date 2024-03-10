@@ -1,7 +1,8 @@
 use reqwest::Method;
 
 use crate::{
-    base_client::BaseClient, CreateThreadRequest, ModifyThreadRequest, OpenAIError, ThreadsResponse,
+    base_client::BaseClient, CreateThreadRequest, DeletionStatus, ModifyThreadRequest, OpenAIError,
+    ThreadsResponse,
 };
 
 const THREADS_URL: &str = "/v1/threads";
@@ -55,10 +56,13 @@ impl<'a> ThreadsHandler<'a> {
     }
 
     /// Delete a thread.
-    pub async fn delete_thread<S: Into<String>>(&self, thread_id: S) -> Result<(), OpenAIError> {
+    pub async fn delete_thread<S: Into<String>>(
+        &self,
+        thread_id: S,
+    ) -> Result<DeletionStatus, OpenAIError> {
         let url = format!("{}/{}", THREADS_URL, thread_id.into());
-        let _ = self.client.send(&url, Method::DELETE).await?;
+        let response = self.client.send(&url, Method::DELETE).await;
 
-        Ok(())
+        Ok(response?.json().await?)
     }
 }

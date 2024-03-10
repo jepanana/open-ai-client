@@ -23,6 +23,22 @@ pub struct ThreadMessage {
     pub metadata: BTreeMap<String, String>,
 }
 
+impl ThreadMessage {
+    /// Creates a new instance of user message with the provided content.
+    pub fn user_message<S: Into<String>>(content: S) -> Self {
+        Self {
+            content: content.into(),
+            ..Default::default()
+        }
+    }
+
+    /// Add file IDs to the message.
+    pub fn with_file_ids(mut self, file_ids: Vec<String>) -> Self {
+        self.file_ids = file_ids;
+        self
+    }
+}
+
 /// The role of the entity that is creating the message.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

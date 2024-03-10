@@ -8,10 +8,11 @@ mod chat;
 mod embeddings;
 mod models;
 mod moderations;
+mod threads;
 
 fn create_client() -> OpenAIClient {
     // let open_ai_token = std::env::var("OPEN_AI_TOKEN").expect("OPEN_AI_TOKEN not set");
-    let open_ai_token = "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";
+    let open_ai_token = "";
 
     ClientBuilder::new(&open_ai_token)
         .timeout(Duration::from_secs(20))
@@ -73,4 +74,10 @@ async fn moderation() {
 async fn assistant() {
     let client = create_client();
     assistants::assistants_test(client).await;
+}
+
+#[tokio::test]
+async fn threads() {
+    let client = create_client();
+    threads::threads_test(client).await;
 }
