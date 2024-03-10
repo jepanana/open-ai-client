@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{AssistantTool, ChatModel};
 
-/// A list of [`super::AssistantsResponse`]
+/// A list of assistants.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct AssistantListResponse {
     /// The object type, which is always list.

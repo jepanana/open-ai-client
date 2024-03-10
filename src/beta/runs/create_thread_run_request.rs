@@ -33,6 +33,17 @@ pub struct CreateThreadAndRunRequest {
     pub metadata: BTreeMap<String, String>,
 }
 
+impl CreateThreadAndRunRequest {
+    /// Create a new request with the given thread.
+    pub fn with_thread<S: Into<String>>(assistant_id: S, thread: CreateThreadRequest) -> Self {
+        Self {
+            assistant_id: assistant_id.into(),
+            thread,
+            ..Default::default()
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
 

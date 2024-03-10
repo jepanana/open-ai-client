@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::MessageRole;
 
-/// A List of messages within a [thread](https://platform.openai.com/docs/api-reference/threads).
+/// A List of messages.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct MessagesListResponse {
     /// The object type, which is always `list`.

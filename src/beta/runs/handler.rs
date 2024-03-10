@@ -6,7 +6,6 @@ use crate::{
     SortingOrder, SubmitToolsRequest,
 };
 
-const ASSISTANTS_URL: &str = "/v1/assistants";
 const THREADS_URL: &str = "/v1/threads";
 
 /// Runs handler for OpenAI API
@@ -23,8 +22,8 @@ impl<'a> RunsHandler<'a> {
     /// Create a run.
     pub async fn create_run<S: Into<String>>(
         &self,
-        request: CreateRunsRequest,
         thread_id: S,
+        request: CreateRunsRequest,
     ) -> Result<RunsResponse, OpenAIError> {
         let url = format!("{}/{}/runs", THREADS_URL, thread_id.into());
         let response = self.client.send_body(request, &url, Method::POST).await;
@@ -37,7 +36,7 @@ impl<'a> RunsHandler<'a> {
         &self,
         request: CreateThreadAndRunRequest,
     ) -> Result<RunsResponse, OpenAIError> {
-        let url = format!("{}/runs", ASSISTANTS_URL);
+        let url = format!("{}/runs", THREADS_URL);
         let response = self.client.send_body(request, &url, Method::POST).await;
 
         Ok(response?.json().await?)

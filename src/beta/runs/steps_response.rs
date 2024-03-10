@@ -5,7 +5,14 @@ use serde::{Deserialize, Serialize};
 use crate::{AssistantTool, RunError, RunStatus, TokenUsage};
 
 /// A list of [`RunsResponse`] objects.
-pub type ListRunsStepsResponse = Vec<RunsStepResponse>;
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ListRunsStepsResponse {
+    /// Object type, which is always `list`.
+    pub object: String,
+
+    /// A list of [`RunsStepResponse`] objects.
+    pub data: Vec<RunsStepResponse>,
+}
 
 /// Represents an execution run on a [thread](https://platform.openai.com/docs/api-reference/threads).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -60,7 +67,8 @@ pub struct RunsStepResponse {
     pub metadata: BTreeMap<String, String>,
 
     /// Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
-    pub usage: TokenUsage,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usage: Option<TokenUsage>,
 }
 
 /// Represents the details of a run step.
@@ -171,11 +179,11 @@ mod tests {
                 },
             }),
             metadata: Default::default(),
-            usage: TokenUsage {
+            usage: Some(TokenUsage {
                 prompt_tokens: 123,
                 completion_tokens: 456,
                 total_tokens: 579,
-            },
+            }),
         };
 
         assert_eq!(response, expected_response);

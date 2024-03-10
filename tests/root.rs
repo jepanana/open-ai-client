@@ -9,11 +9,11 @@ mod embeddings;
 mod messages;
 mod models;
 mod moderations;
+mod runs;
 mod threads;
 
 fn create_client() -> OpenAIClient {
-    // let open_ai_token = std::env::var("OPEN_AI_TOKEN").expect("OPEN_AI_TOKEN not set");
-    let open_ai_token = "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";
+    let open_ai_token = std::env::var("OPEN_AI_TOKEN").expect("OPEN_AI_TOKEN not set");
 
     ClientBuilder::new(&open_ai_token)
         .timeout(Duration::from_secs(20))
@@ -87,4 +87,10 @@ async fn threads() {
 async fn messages() {
     let client = create_client();
     messages::messages_test(client).await;
+}
+
+#[tokio::test]
+async fn runs() {
+    let client = create_client();
+    runs::runs_test(client).await;
 }

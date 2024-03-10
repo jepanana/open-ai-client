@@ -33,6 +33,22 @@ pub struct CreateRunsRequest {
     pub metadata: BTreeMap<String, String>,
 }
 
+impl CreateRunsRequest {
+    /// Create a new request with the given assistant ID and model.
+    pub fn for_assistant(assistant_id: String) -> Self {
+        Self {
+            assistant_id,
+            ..Default::default()
+        }
+    }
+
+    /// Add additional instructions to the request.
+    pub fn with_additional_instructions(mut self, additional_instructions: String) -> Self {
+        self.additional_instructions = Some(additional_instructions);
+        self
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
