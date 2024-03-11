@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use serde::{Deserialize, Serialize};
 
 /// Represents the status of a run.
@@ -27,6 +29,12 @@ pub enum RunStatus {
 
     /// The run expired.
     Expired,
+}
+
+impl Display for RunStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 /// Represents an error that occurred during the execution of a run.

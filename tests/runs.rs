@@ -46,7 +46,7 @@ async fn create_thread(client: &OpenAIClient) -> String {
         ThreadMessage::user_message("How does AI work? Explain it in simple terms."),
     ];
 
-    let request = CreateThreadRequest::with_messages(messages);
+    let request = CreateThreadRequest::from_messages(messages);
     let result = client.threads().create_thread(request).await.unwrap();
 
     assert!(result.object == "thread");
@@ -65,8 +65,7 @@ async fn create_run(client: &OpenAIClient, assistant_id: &str, thread_id: &str) 
 }
 
 async fn create_and_run(client: &OpenAIClient, assistant_id: &str) {
-    let request =
-        CreateThreadAndRunRequest::with_thread(assistant_id, CreateThreadRequest::empty());
+    let request = CreateThreadAndRunRequest::for_thread(assistant_id, CreateThreadRequest::empty());
 
     let result = client.runs().create_thread_and_run(request).await.unwrap();
 

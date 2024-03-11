@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{AssistantTool, ChatModel, CreateThreadRequest};
+use crate::{AssistantTool, ChatModel, CreateThreadRequest, ThreadMessage};
 
 /// Request to create a thread and run it.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
@@ -35,10 +35,19 @@ pub struct CreateThreadAndRunRequest {
 
 impl CreateThreadAndRunRequest {
     /// Create a new request with the given thread.
-    pub fn with_thread<S: Into<String>>(assistant_id: S, thread: CreateThreadRequest) -> Self {
+    pub fn for_thread<S: Into<String>>(assistant_id: S, thread: CreateThreadRequest) -> Self {
         Self {
             assistant_id: assistant_id.into(),
             thread,
+            ..Default::default()
+        }
+    }
+
+    /// Create a new thread and run request with given messages.
+    pub fn for_messages<S: Into<String>>(assistant_id: S, messages: Vec<ThreadMessage>) -> Self {
+        Self {
+            assistant_id: assistant_id.into(),
+            thread: CreateThreadRequest::from_messages(messages),
             ..Default::default()
         }
     }

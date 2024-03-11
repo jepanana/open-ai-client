@@ -1,8 +1,8 @@
 use reqwest::Method;
 
 use crate::{
-    base_client::BaseClient, CreateMessageRequest, MessagesFileListResponse, MessagesFileResponse,
-    MessagesListResponse, MessagesResponse, ModifyMessagesRequest, OpenAIError, SortingOrder,
+    base_client::BaseClient, CreateMessageRequest, MessageResponse, MessagesFileListResponse,
+    MessagesFileResponse, MessagesListResponse, ModifyMessagesRequest, OpenAIError, SortingOrder,
 };
 
 const THREADS_URL: &str = "/v1/threads";
@@ -23,7 +23,7 @@ impl<'a> MessagesHandler<'a> {
         &self,
         thread_id: S,
         request: CreateMessageRequest,
-    ) -> Result<MessagesResponse, OpenAIError> {
+    ) -> Result<MessageResponse, OpenAIError> {
         let url = format!("{}/{}/messages", THREADS_URL, thread_id.into());
 
         let response = self.client.send_body(request, &url, Method::POST).await;
@@ -74,7 +74,7 @@ impl<'a> MessagesHandler<'a> {
         &self,
         thread_id: S,
         message_id: S,
-    ) -> Result<MessagesResponse, OpenAIError> {
+    ) -> Result<MessageResponse, OpenAIError> {
         let url = format!(
             "{}/{}/messages/{}",
             THREADS_URL,
@@ -112,7 +112,7 @@ impl<'a> MessagesHandler<'a> {
         thread_id: S,
         message_id: S,
         request: ModifyMessagesRequest,
-    ) -> Result<MessagesResponse, OpenAIError> {
+    ) -> Result<MessageResponse, OpenAIError> {
         let url = format!(
             "{}/{}/messages/{}",
             THREADS_URL,

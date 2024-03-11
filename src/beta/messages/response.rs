@@ -11,12 +11,12 @@ pub struct MessagesListResponse {
     pub object: String,
 
     /// A list of [`MessagesResponse`]
-    pub data: Vec<MessagesResponse>,
+    pub data: Vec<MessageResponse>,
 }
 
 /// Represents a message within a [thread](https://platform.openai.com/docs/api-reference/threads).
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
-pub struct MessagesResponse {
+pub struct MessageResponse {
     /// The identifier, which can be referenced in API endpoints.
     pub id: String,
 
@@ -51,6 +51,33 @@ pub struct MessagesResponse {
     /// Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
     #[serde(default)]
     pub metadata: BTreeMap<String, String>,
+}
+
+impl MessageResponse {
+    /// Get the first text content of the message.
+    pub fn first_text_content(&self) -> Option<String> {
+        self.content.iter().find_map(|content| {
+            if let MessageContent::Text(text) = content {
+                Some(text.text.value.clone())
+            } else {
+                None
+            }
+        })
+    }
+
+    /// Get all the text contents of the message.
+    pub fn text_contents(&self) -> Vec<String> {
+        self.content
+            .iter()
+            .filter_map(|content| {
+                if let MessageContent::Text(text) = content {
+                    Some(text.text.value.clone())
+                } else {
+                    None
+                }
+            })
+            .collect()
+    }
 }
 
 /// The content of the [`MessageResponse`] either text and/or images.
@@ -199,9 +226,9 @@ mod tests {
           "run_id": "run_abc123",
         });
 
-        let response: MessagesResponse = serde_json::from_value(json).unwrap();
+        let response: MessageResponse = serde_json::from_value(json).unwrap();
 
-        let expected_response = MessagesResponse {
+        let expected_response = MessageResponse {
             id: "msg_abc123".to_string(),
             object: "thread.message".to_string(),
             created_at: 1698983503,

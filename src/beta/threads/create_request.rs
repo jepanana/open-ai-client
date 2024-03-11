@@ -26,7 +26,7 @@ impl CreateThreadRequest {
         }
     }
     /// Creates a new instance of the request with the provided messages.
-    pub fn with_messages(messages: Vec<ThreadMessage>) -> Self {
+    pub fn from_messages(messages: Vec<ThreadMessage>) -> Self {
         Self {
             messages,
             ..Default::default()
