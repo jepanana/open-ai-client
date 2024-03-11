@@ -1,4 +1,7 @@
-use open_ai_client::{ChatModel, CreateAssistantRequest, ModifyAssistantRequest, OpenAIClient};
+use open_ai_client::{
+    assistants::{CreateAssistantRequest, ModifyAssistantRequest},
+    ChatModel, OpenAIClient,
+};
 
 pub async fn assistants_test(client: OpenAIClient) {
     let assistant_id = creates_assistant(&client).await;

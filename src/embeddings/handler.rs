@@ -1,16 +1,18 @@
 use reqwest::Method;
 
-use crate::{base_client::BaseClient, EmbeddingRequest, EmbeddingResponse, OpenAIError};
+use crate::{base_client::BaseClient, common::OpenAIError};
+
+use super::{EmbeddingRequest, EmbeddingResponse};
 
 const EMBEDDING_URL: &str = "/v1/embeddings";
 
 /// Embedding handler for OpenAI API
 #[derive(Debug, Clone)]
-pub struct EmbeddingHandler<'a> {
+pub struct EmbeddingsHandler<'a> {
     client: &'a BaseClient,
 }
 
-impl<'a> EmbeddingHandler<'a> {
+impl<'a> EmbeddingsHandler<'a> {
     pub(crate) fn new(client: &'a BaseClient) -> Self {
         Self { client }
     }

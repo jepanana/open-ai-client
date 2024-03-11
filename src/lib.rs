@@ -36,18 +36,33 @@
 #[macro_use]
 extern crate tracing;
 
-#[cfg(feature = "stable")]
-mod audio;
 mod base_client;
 mod beta;
-mod chat;
 mod client;
 mod client_builder;
 mod common;
-mod embeddings;
-mod files;
-mod fine_tunning;
-mod images;
+
+pub use self::client::*;
+pub use self::client_builder::*;
+pub use self::common::*;
+
+#[cfg(feature = "audio")]
+pub mod audio;
+
+#[cfg(feature = "chat")]
+pub mod chat;
+
+#[cfg(feature = "embeddings")]
+pub mod embeddings;
+
+#[cfg(feature = "files")]
+pub mod files;
+
+#[cfg(feature = "fine_tunning")]
+pub mod fine_tunning;
+
+#[cfg(feature = "images")]
+pub mod images;
 
 #[cfg(feature = "models")]
 pub mod models;
@@ -55,40 +70,16 @@ pub mod models;
 #[cfg(feature = "moderations")]
 pub mod moderations;
 
-#[cfg(feature = "stable")]
-pub use self::audio::*;
+#[cfg(feature = "assistants")]
+pub use self::beta::assistants;
 
-pub use self::beta::*;
+pub use self::beta::common as assistants_common;
 
-#[cfg(feature = "stable")]
-pub use self::chat::*;
+#[cfg(feature = "messages")]
+pub use self::beta::messages;
 
-#[cfg(any(feature = "stable", feature = "beta"))]
-pub use self::common::*;
+#[cfg(feature = "runs")]
+pub use self::beta::runs;
 
-#[cfg(feature = "stable")]
-pub use self::embeddings::*;
-
-#[cfg(feature = "stable")]
-pub use self::files::*;
-
-#[cfg(feature = "stable")]
-pub use self::fine_tunning::*;
-
-#[cfg(feature = "stable")]
-pub use self::images::*;
-
-#[cfg(feature = "models")]
-pub use self::models::ModelsHandler;
-
-#[cfg(feature = "moderations")]
-pub use self::moderations::ModerationsHandler;
-
-#[cfg(feature = "stable")]
-pub use self::client::*;
-
-#[cfg(any(feature = "stable", feature = "beta"))]
-pub use self::client_builder::*;
-
-#[cfg(feature = "stable")]
-pub use self::common::OpenAIError;
+#[cfg(feature = "threads")]
+pub use self::beta::threads;

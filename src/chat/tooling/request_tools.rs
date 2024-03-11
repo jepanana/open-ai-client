@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::ToolType;
+use super::ToolType;
 
 /// A tool which OpenAI models can call
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]

@@ -1,9 +1,9 @@
 use reqwest::Body;
 use tokio_util::codec::BytesCodec;
 
-use crate::{
-    common::OpenAIFile, ImageGenerationModel, ImageResponseFormat, ImageSize, OpenAIError,
-};
+use crate::common::{ImageGenerationModel, OpenAIError, OpenAIFile};
+
+use super::{ImageResponseFormat, ImageSize};
 
 /// Creates an edited or extended image given an original image and a prompt.
 #[derive(Debug)]

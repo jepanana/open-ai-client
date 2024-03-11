@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{MessageRole, ToolCall};
+use crate::common::MessageRole;
+
+use super::ToolCall;
 
 /// Message comprising the conversation
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]

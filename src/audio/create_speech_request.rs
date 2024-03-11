@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::TtsModel;
+use crate::common::TtsModel;
 
 /// Generates audio from the input text.
 #[derive(Debug, Clone, Serialize, Deserialize)]

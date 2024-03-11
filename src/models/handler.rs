@@ -1,4 +1,4 @@
-use crate::{base_client::BaseClient, OpenAIError};
+use crate::{base_client::BaseClient, common::OpenAIError};
 
 use super::{ListResponse, ModelObjectResponse};
 

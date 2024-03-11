@@ -1,7 +1,7 @@
 use reqwest::Body;
 use tokio_util::codec::BytesCodec;
 
-use crate::{common::OpenAIFile, OpenAIError};
+use crate::common::{OpenAIError, OpenAIFile};
 
 /// Request to upload a file to the OpenAI API.
 #[derive(Debug)]

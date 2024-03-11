@@ -1,7 +1,7 @@
 use futures_util::StreamExt;
 use reqwest_eventsource::Event;
 
-use crate::OpenAIError;
+use super::OpenAIError;
 
 /// OpenAIStream is a wrapper around [`tokio::sync::mpsc::UnboundedReceiver<Result<T, OpenAIError>>`] that
 /// provides a convenient way to read values from stream.

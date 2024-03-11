@@ -1,7 +1,9 @@
 use std::collections::BTreeMap;
 
 use open_ai_client::{
-    CreateMessageRequest, CreateThreadRequest, MessageContent, ModifyMessagesRequest, OpenAIClient,
+    messages::{CreateMessageRequest, MessageContent, ModifyMessagesRequest},
+    threads::CreateThreadRequest,
+    OpenAIClient,
 };
 
 pub async fn messages_test(client: OpenAIClient) {

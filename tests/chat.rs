@@ -1,7 +1,8 @@
 use std::{thread, time::Duration};
 
 use open_ai_client::{
-    ChatModel, ChatRequestMessage, CreateChatCompletionRequest, MessageRole, OpenAIClient,
+    chat::{ChatRequestMessage, CreateChatCompletionRequest},
+    ChatModel, MessageRole, OpenAIClient,
 };
 
 pub async fn chat_completion_test(client: OpenAIClient) {

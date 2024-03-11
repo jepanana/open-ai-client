@@ -6,14 +6,24 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["stable"]
+default = ["stable", "beta"]
 
-full = ["stable", "beta"]
-stable = ["models", "moderations"]
-beta = []
+stable = ["audio", "chat", "embeddings", "files", "fine_tunning", "images", "models", "moderations"]
+beta = ["assistants", "messages", "runs", "threads"]
 
+audio = []
+chat = []
+embeddings = []
+files = []
+fine_tunning = []
+images = []
 models = []
 moderations = []
+
+assistants = []
+messages = []
+runs = []
+threads = []
 
 [dependencies]
 anyhow = { version = "1" }

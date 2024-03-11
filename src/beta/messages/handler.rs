@@ -1,8 +1,13 @@
 use reqwest::Method;
 
 use crate::{
-    base_client::BaseClient, CreateMessageRequest, MessageResponse, MessagesFileListResponse,
-    MessagesFileResponse, MessagesListResponse, ModifyMessagesRequest, OpenAIError, SortingOrder,
+    base_client::BaseClient,
+    common::{OpenAIError, SortingOrder},
+};
+
+use super::{
+    CreateMessageRequest, MessageResponse, MessagesFileListResponse, MessagesFileResponse,
+    MessagesListResponse, ModifyMessagesRequest,
 };
 
 const THREADS_URL: &str = "/v1/threads";

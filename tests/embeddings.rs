@@ -1,4 +1,7 @@
-use open_ai_client::{EmbeddingInput, EmbeddingModel, EmbeddingRequest, OpenAIClient};
+use open_ai_client::{
+    embeddings::{EmbeddingInput, EmbeddingRequest},
+    EmbeddingModel, OpenAIClient,
+};
 
 pub async fn embeddings_test(client: OpenAIClient) {
     let request = EmbeddingRequest {

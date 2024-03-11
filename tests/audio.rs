@@ -1,7 +1,9 @@
 use open_ai_client::{
-    AudioModel, AudioResponse, AudioResponseFormat, CreateSpeechRequest,
-    CreateTranscriptionRequest, CreateTranslationRequest, OpenAIClient, OpenAIFile,
-    SpeechResponseFormat, TtsModel, Voice,
+    audio::{
+        AudioResponse, AudioResponseFormat, CreateSpeechRequest, CreateTranscriptionRequest,
+        CreateTranslationRequest, SpeechResponseFormat, Voice,
+    },
+    AudioModel, OpenAIClient, OpenAIFile, TtsModel,
 };
 
 pub async fn audio_create_speech_test(client: OpenAIClient) {

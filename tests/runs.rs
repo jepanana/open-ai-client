@@ -1,8 +1,7 @@
 use std::collections::BTreeMap;
 
 use open_ai_client::{
-    ChatModel, CreateAssistantRequest, CreateRunsRequest, CreateThreadAndRunRequest,
-    CreateThreadRequest, ModifyRunsRequest, OpenAIClient, RunStatus, ThreadMessage,
+    assistants::CreateAssistantRequest, assistants_common::ThreadMessage, runs::{CreateRunsRequest, CreateThreadAndRunRequest, ModifyRunsRequest, RunStatus}, threads::CreateThreadRequest, ChatModel, OpenAIClient
 };
 
 pub async fn runs_test(client: OpenAIClient) {

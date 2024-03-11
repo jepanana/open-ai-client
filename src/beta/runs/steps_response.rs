@@ -2,7 +2,9 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{AssistantTool, RunError, RunStatus, TokenUsage};
+use crate::{assistants_common::AssistantTool, common::TokenUsage};
+
+use super::{RunError, RunStatus};
 
 /// A list of [`RunsResponse`] objects.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

@@ -1,9 +1,13 @@
 use reqwest::Method;
 
 use crate::{
-    base_client::BaseClient, CreateRunsRequest, CreateThreadAndRunRequest, ListRunsResponse,
-    ListRunsStepsResponse, ModifyRunsRequest, OpenAIError, RunsResponse, RunsStepResponse,
-    SortingOrder, SubmitToolsRequest,
+    base_client::BaseClient,
+    common::{OpenAIError, SortingOrder},
+};
+
+use super::{
+    CreateRunsRequest, CreateThreadAndRunRequest, ListRunsResponse, ListRunsStepsResponse,
+    ModifyRunsRequest, RunsResponse, RunsStepResponse, SubmitToolsRequest,
 };
 
 const THREADS_URL: &str = "/v1/threads";

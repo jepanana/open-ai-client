@@ -1,8 +1,9 @@
 use reqwest::Method;
 
-use crate::{
-    base_client::BaseClient, CreateEditImageRequest, CreateImageRequest,
-    CreateImageVariationRequest, ImageResponse, OpenAIError,
+use crate::{base_client::BaseClient, common::OpenAIError};
+
+use super::{
+    CreateEditImageRequest, CreateImageRequest, CreateImageVariationRequest, ImageResponse,
 };
 
 const IMAGES_GENERATION_URL: &str = "/v1/images/generations";

@@ -2,7 +2,9 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{common::ChatModel, ChatResponseFormat, MessageRole, Tool, ToolChoice};
+use crate::common::{ChatModel, MessageRole};
+
+use super::{ChatResponseFormat, Tool, ToolChoice};
 
 /// Request to the Chat API
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]

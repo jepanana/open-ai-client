@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{ImageGenerationModel, ImageResponseFormat, ImageSize};
+use crate::common::ImageGenerationModel;
+
+use super::{ImageResponseFormat, ImageSize};
 
 /// Creates an image given a prompt.
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]

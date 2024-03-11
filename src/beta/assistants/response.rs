@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{AssistantTool, ChatModel};
+use crate::{assistants_common::AssistantTool, common::ChatModel};
 
 /// A list of assistants.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]

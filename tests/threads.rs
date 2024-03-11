@@ -1,6 +1,10 @@
 use std::collections::BTreeMap;
 
-use open_ai_client::{CreateThreadRequest, ModifyThreadRequest, OpenAIClient, ThreadMessage};
+use open_ai_client::{
+    assistants_common::ThreadMessage,
+    threads::{CreateThreadRequest, ModifyThreadRequest},
+    OpenAIClient,
+};
 
 pub async fn threads_test(client: OpenAIClient) {
     let thread_id = create_thread(&client).await;

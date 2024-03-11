@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    common::{ChatModel, TokenUsage},
-    ChatResponseChunk,
-};
+use crate::common::{ChatModel, TokenUsage};
+
+use super::ChatResponseChunk;
 
 /// Represents a chat completion response returned by model, based on the provided input
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

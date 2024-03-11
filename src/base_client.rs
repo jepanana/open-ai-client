@@ -3,7 +3,7 @@ use reqwest_eventsource::{EventSource, RequestBuilderExt};
 use serde::Serialize;
 use url::Url;
 
-use crate::OpenAIError;
+use crate::common::OpenAIError;
 
 /// A wrapper for request client
 #[derive(Debug, Clone)]

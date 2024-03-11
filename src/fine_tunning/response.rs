@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::Status;
+use super::Status;
 
 /// List your organization's fine-tuning jobs
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

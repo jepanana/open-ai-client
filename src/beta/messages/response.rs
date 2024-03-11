@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::MessageRole;
+use crate::common::MessageRole;
 
 /// A List of messages.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]

@@ -3,7 +3,7 @@ use std::{fs, path::Path};
 use tokio::fs::File;
 use tokio_util::codec::{Decoder, FramedRead};
 
-use crate::OpenAIError;
+use super::OpenAIError;
 
 /// A structure representing a file that can be uploaded to OpenAI
 #[derive(Debug)]

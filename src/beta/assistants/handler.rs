@@ -1,9 +1,14 @@
 use reqwest::Method;
 
 use crate::{
-    base_client::BaseClient, AssistantFileResponse, AssistantListResponse,
-    AssistantsFileListResponse, AssistantsResponse, CreateAssistantFileRequest,
-    CreateAssistantRequest, DeletionStatus, ModifyAssistantRequest, OpenAIError, SortingOrder,
+    assistants_common::DeletionStatus,
+    base_client::BaseClient,
+    common::{OpenAIError, SortingOrder},
+};
+
+use super::{
+    AssistantFileResponse, AssistantListResponse, AssistantsFileListResponse, AssistantsResponse,
+    CreateAssistantFileRequest, CreateAssistantRequest, ModifyAssistantRequest,
 };
 
 const ASSISTANTS_URL: &str = "/v1/assistants";

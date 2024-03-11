@@ -1,9 +1,8 @@
 use reqwest::Method;
 
-use crate::{
-    base_client::BaseClient, CreateThreadRequest, DeletionStatus, ModifyThreadRequest, OpenAIError,
-    ThreadsResponse,
-};
+use crate::{assistants_common::DeletionStatus, base_client::BaseClient, common::OpenAIError};
+
+use super::{CreateThreadRequest, ModifyThreadRequest, ThreadsResponse};
 
 const THREADS_URL: &str = "/v1/threads";
 

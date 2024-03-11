@@ -1,8 +1,10 @@
 use reqwest::Method;
 
-use crate::{
-    base_client::BaseClient, AudioResponse, CreateSpeechRequest, CreateSpeechResponse,
-    CreateTranscriptionRequest, CreateTranslationRequest, OpenAIError,
+use crate::{base_client::BaseClient, common::OpenAIError};
+
+use super::{
+    AudioResponse, CreateSpeechRequest, CreateSpeechResponse, CreateTranscriptionRequest,
+    CreateTranslationRequest,
 };
 
 const AUDIO_CREATE_SPEECH_URL: &str = "v1/audio/speech";

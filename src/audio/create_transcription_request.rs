@@ -1,10 +1,9 @@
 use reqwest::Body;
 use tokio_util::codec::BytesCodec;
 
-use crate::{
-    common::{AudioModel, OpenAIFile},
-    AudioResponseFormat, OpenAIError,
-};
+use crate::common::{AudioModel, OpenAIError, OpenAIFile};
+
+use super::AudioResponseFormat;
 
 /// Transcribes audio into the input language
 #[derive(Debug)]

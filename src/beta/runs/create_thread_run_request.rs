@@ -2,7 +2,11 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{AssistantTool, ChatModel, CreateThreadRequest, ThreadMessage};
+use crate::{
+    assistants_common::{AssistantTool, ThreadMessage},
+    common::ChatModel,
+    threads::CreateThreadRequest,
+};
 
 /// Request to create a thread and run it.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]

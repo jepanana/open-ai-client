@@ -1,8 +1,10 @@
 use reqwest::Method;
 
-use crate::{
-    base_client::BaseClient, CreateFineTunningJobRequest, FineTuningJobEventResponse,
-    FineTuningJobListResponse, FineTuningJobResponse, OpenAIError,
+use crate::{base_client::BaseClient, common::OpenAIError};
+
+use super::{
+    CreateFineTunningJobRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
+    FineTuningJobResponse,
 };
 
 const FINE_TUNNING_URL: &str = "/v1/fine_tuning/jobs";

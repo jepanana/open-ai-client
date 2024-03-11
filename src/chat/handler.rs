@@ -1,9 +1,11 @@
 use reqwest::Method;
 
 use crate::{
-    base_client::BaseClient, ChatCompletionResponse, ChatCompletionStreamResponse,
-    CreateChatCompletionRequest, OpenAIError, OpenAIStream,
+    base_client::BaseClient,
+    common::{OpenAIError, OpenAIStream},
 };
+
+use super::{ChatCompletionResponse, ChatCompletionStreamResponse, CreateChatCompletionRequest};
 
 const CHAT_COMPLETION_URL: &str = "/v1/chat/completions";
 

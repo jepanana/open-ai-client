@@ -2,7 +2,12 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{AssistantTool, ChatModel, RunError, RunStatus, TokenUsage};
+use crate::{
+    assistants_common::AssistantTool,
+    common::{ChatModel, TokenUsage},
+};
+
+use super::{RunError, RunStatus};
 
 /// A list of runs.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

@@ -1,4 +1,4 @@
-use crate::ThreadMessage;
+use crate::assistants_common::ThreadMessage;
 
 /// Request for creating a message.
 pub type CreateMessageRequest = ThreadMessage;

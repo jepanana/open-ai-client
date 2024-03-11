@@ -3,7 +3,7 @@ use std::path::Path;
 use tokio::{fs::File, io::AsyncWriteExt};
 use tokio_util::bytes::Bytes;
 
-use crate::{validate_dir, validate_file_name, OpenAIError};
+use crate::common::{validate_dir, validate_file_name, OpenAIError};
 
 /// The response from the audio create speech endpoint
 #[derive(Debug, Clone, PartialEq)]

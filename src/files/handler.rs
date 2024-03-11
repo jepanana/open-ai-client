@@ -1,9 +1,8 @@
 use reqwest::Method;
 
-use crate::{
-    base_client::BaseClient, FilesDeleteResponse, FilesListResponse, FilesResponse,
-    FilesUploadRequest, OpenAIError,
-};
+use crate::{base_client::BaseClient, common::OpenAIError};
+
+use super::{FilesDeleteResponse, FilesListResponse, FilesResponse, FilesUploadRequest};
 
 const FILES_URL: &str = "/v1/files";
 
