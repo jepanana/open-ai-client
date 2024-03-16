@@ -7,7 +7,7 @@ use super::{ImageResponseFormat, ImageSize};
 
 /// Creates an edited or extended image given an original image and a prompt.
 #[derive(Debug)]
-pub struct CreateEditImageRequest {
+pub struct CreateImageEditRequest {
     /// The image to edit. Must be a valid PNG file, less than 4MB, and square. If mask is not provided, image must have transparency, which will be used as the mask.
     pub image: OpenAIFile,
 
@@ -34,10 +34,10 @@ pub struct CreateEditImageRequest {
     pub user: Option<String>,
 }
 
-impl TryFrom<CreateEditImageRequest> for reqwest::multipart::Form {
+impl TryFrom<CreateImageEditRequest> for reqwest::multipart::Form {
     type Error = OpenAIError;
 
-    fn try_from(request: CreateEditImageRequest) -> Result<Self, Self::Error> {
+    fn try_from(request: CreateImageEditRequest) -> Result<Self, Self::Error> {
         let file_name = request.image.name.to_owned();
         let file_body = Body::wrap_stream(request.image.into_stream(BytesCodec::new()));
 

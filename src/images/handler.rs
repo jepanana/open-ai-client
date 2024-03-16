@@ -3,7 +3,7 @@ use reqwest::Method;
 use crate::{base_client::BaseClient, common::OpenAIError};
 
 use super::{
-    CreateEditImageRequest, CreateImageRequest, CreateImageVariationRequest, ImageResponse,
+    CreateImageEditRequest, CreateImageRequest, CreateImageVariationRequest, ImageResponse,
 };
 
 const IMAGES_GENERATION_URL: &str = "/v1/images/generations";
@@ -35,9 +35,9 @@ impl<'a> ImagesHandler<'a> {
     }
 
     /// Creates an edited or extended image given an original image and a prompt.
-    pub async fn create_images_edit(
+    pub async fn create_image_edit(
         &self,
-        request: CreateEditImageRequest,
+        request: CreateImageEditRequest,
     ) -> Result<ImageResponse, OpenAIError> {
         let response = self
             .client
@@ -48,7 +48,7 @@ impl<'a> ImagesHandler<'a> {
     }
 
     /// Creates a variation of a given image.
-    pub async fn create_images_variant(
+    pub async fn create_image_variation(
         &self,
         request: CreateImageVariationRequest,
     ) -> Result<ImageResponse, OpenAIError> {

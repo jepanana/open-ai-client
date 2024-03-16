@@ -1,7 +1,14 @@
 use serde::{Deserialize, Serialize};
 
 /// A list of files attached to a `message`.
-pub type MessagesFileListResponse = Vec<MessagesFileResponse>;
+#[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
+pub struct ListMessagesFileResponse {
+    /// The object type, which is always `list`.
+    pub object: String,
+
+    /// A list of [`MessagesResponse`]
+    pub data: Vec<MessagesFileResponse>,
+}
 
 /// A list of files attached to a `message`.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]

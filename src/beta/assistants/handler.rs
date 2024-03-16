@@ -7,8 +7,8 @@ use crate::{
 };
 
 use super::{
-    AssistantFileResponse, AssistantListResponse, AssistantsFileListResponse, AssistantsResponse,
-    CreateAssistantFileRequest, CreateAssistantRequest, ModifyAssistantRequest,
+    AssistantFileResponse, AssistantsResponse, CreateAssistantFileRequest, CreateAssistantRequest,
+    ListAssistantsFilesResponse, ListAssistantsResponse, ModifyAssistantRequest,
 };
 
 const ASSISTANTS_URL: &str = "/v1/assistants";
@@ -57,7 +57,7 @@ impl<'a> AssistantsHandler<'a> {
         _order: Option<SortingOrder>,
         _after: Option<String>,
         _before: Option<String>,
-    ) -> Result<AssistantListResponse, OpenAIError> {
+    ) -> Result<ListAssistantsResponse, OpenAIError> {
         let response = self.client.send(ASSISTANTS_URL, Method::GET).await;
 
         Ok(response?.json().await?)
@@ -71,7 +71,7 @@ impl<'a> AssistantsHandler<'a> {
         _order: Option<SortingOrder>,
         _after: Option<String>,
         _before: Option<String>,
-    ) -> Result<AssistantsFileListResponse, OpenAIError> {
+    ) -> Result<ListAssistantsFilesResponse, OpenAIError> {
         let url = format!("{}/{}/files", ASSISTANTS_URL, assistant_id.into());
         let response = self.client.send(&url, Method::GET).await;
         Ok(response?.json().await?)
@@ -136,7 +136,7 @@ impl<'a> AssistantsHandler<'a> {
         &self,
         assistant_id: S,
         file_id: S,
-    ) -> Result<(), OpenAIError> {
+    ) -> Result<DeletionStatus, OpenAIError> {
         let url = format!(
             "{}/{}/files/{}",
             ASSISTANTS_URL,
@@ -144,8 +144,8 @@ impl<'a> AssistantsHandler<'a> {
             file_id.into()
         );
 
-        let _ = self.client.send(&url, Method::DELETE).await;
+        let response = self.client.send(&url, Method::DELETE).await;
 
-        Ok(())
+        Ok(response?.json().await?)
     }
 }

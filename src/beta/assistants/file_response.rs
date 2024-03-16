@@ -1,7 +1,14 @@
 use serde::{Deserialize, Serialize};
 
 /// A list of [Files](https://platform.openai.com/docs/api-reference/files) attached to an `assistant`.
-pub type AssistantsFileListResponse = Vec<AssistantFileResponse>;
+#[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
+pub struct ListAssistantsFilesResponse {
+    /// The object type, which is always list.
+    pub object: String,
+
+    /// A list of [`AssistantsResponse`].
+    pub data: Vec<AssistantFileResponse>,
+}
 
 /// A list of [Files](https://platform.openai.com/docs/api-reference/files) attached to an `assistant`.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]

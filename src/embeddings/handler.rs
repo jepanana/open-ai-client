@@ -2,7 +2,7 @@ use reqwest::Method;
 
 use crate::{base_client::BaseClient, common::OpenAIError};
 
-use super::{EmbeddingRequest, EmbeddingResponse};
+use super::{CreateEmbeddingsRequest, EmbeddingResponse};
 
 const EMBEDDING_URL: &str = "/v1/embeddings";
 
@@ -20,7 +20,7 @@ impl<'a> EmbeddingsHandler<'a> {
     /// Creates an embedding vector representing the input text.
     pub async fn create_embeddings(
         &self,
-        request: EmbeddingRequest,
+        request: CreateEmbeddingsRequest,
     ) -> Result<EmbeddingResponse, OpenAIError> {
         let response = self
             .client

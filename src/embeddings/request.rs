@@ -5,7 +5,7 @@ use crate::common::EmbeddingModel;
 /// POST https://api.openai.com/v1/embeddings
 /// Creates an embedding vector representing the input text
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct EmbeddingRequest {
+pub struct CreateEmbeddingsRequest {
     /// Input text to embed, encoded as a string or array of tokens. To embed multiple inputs in a single request,
     /// pass an array of strings or array of token arrays. The input must not exceed the max input tokens
     /// for the model (8192 tokens for `text-embedding-ada-002`), cannot be an empty string, and any array must be 2048 dimensions or less.
@@ -59,7 +59,7 @@ impl Default for EmbeddingInput {
     }
 }
 
-impl EmbeddingRequest {
+impl CreateEmbeddingsRequest {
     /// Creates a new [`EmbeddingRequest`] with a given single input.
     pub fn from_single_input<S>(input: S) -> Self
     where
@@ -106,7 +106,7 @@ mod tests {
 
     #[test]
     fn serializes_request_correctly() {
-        let request = EmbeddingRequest {
+        let request = CreateEmbeddingsRequest {
             model: EmbeddingModel::TextEmbeddingAda002,
             input: EmbeddingInput::Single("The food was delicious and the waiter...".to_string()),
             ..Default::default()

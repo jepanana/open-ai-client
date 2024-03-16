@@ -5,7 +5,7 @@ use crate::common::{OpenAIError, OpenAIFile};
 
 /// Request to upload a file to the OpenAI API.
 #[derive(Debug)]
-pub struct FilesUploadRequest {
+pub struct UploadFileRequest {
     /// The File object (not file name) to be uploaded.
     pub file: OpenAIFile,
 
@@ -18,10 +18,10 @@ pub struct FilesUploadRequest {
     pub purpose: String,
 }
 
-impl TryFrom<FilesUploadRequest> for reqwest::multipart::Form {
+impl TryFrom<UploadFileRequest> for reqwest::multipart::Form {
     type Error = OpenAIError;
 
-    fn try_from(request: FilesUploadRequest) -> Result<Self, Self::Error> {
+    fn try_from(request: UploadFileRequest) -> Result<Self, Self::Error> {
         let file_name = request.file.name.to_owned();
         let file_body = Body::wrap_stream(request.file.into_stream(BytesCodec::new()));
 

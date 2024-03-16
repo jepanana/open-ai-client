@@ -6,7 +6,7 @@ use crate::common::MessageRole;
 
 /// A List of messages.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
-pub struct MessagesListResponse {
+pub struct ListMessagesResponse {
     /// The object type, which is always `list`.
     pub object: String,
 

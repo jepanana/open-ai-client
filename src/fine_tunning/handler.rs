@@ -3,8 +3,8 @@ use reqwest::Method;
 use crate::{base_client::BaseClient, common::OpenAIError};
 
 use super::{
-    CreateFineTunningJobRequest, FineTuningJobEventResponse, FineTuningJobListResponse,
-    FineTuningJobResponse,
+    CreateFineTunningJobRequest, FineTuningJobResponse, ListFineTuningJobResponse,
+    ListFineTunningJobEventResponse,
 };
 
 const FINE_TUNNING_URL: &str = "/v1/fine_tuning/jobs";
@@ -36,7 +36,11 @@ impl<'a> FineTuningHandler<'a> {
     }
 
     /// List your organization's fine-tuning jobs
-    pub async fn list_fine_tunning_jobs(&self) -> Result<FineTuningJobListResponse, OpenAIError> {
+    pub async fn list_fine_tunning_jobs<S: Into<String>>(
+        &self,
+        _after: S,
+        _limit: u32,
+    ) -> Result<ListFineTuningJobResponse, OpenAIError> {
         let response = self.client.send(FINE_TUNNING_URL, Method::GET).await;
 
         Ok(response?.json().await?)
@@ -46,7 +50,7 @@ impl<'a> FineTuningHandler<'a> {
     pub async fn list_fine_tunning_job_events<S: Into<String>>(
         &self,
         job_id: S,
-    ) -> Result<FineTuningJobEventResponse, OpenAIError> {
+    ) -> Result<ListFineTunningJobEventResponse, OpenAIError> {
         let url = format!("{}/{}/events", FINE_TUNNING_URL, job_id.into());
         let response = self.client.send(&url, Method::GET).await;
 

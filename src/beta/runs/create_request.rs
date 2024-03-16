@@ -6,7 +6,7 @@ use crate::{assistants_common::AssistantTool, common::ChatModel};
 
 /// Request to create a run.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct CreateRunsRequest {
+pub struct CreateRunRequest {
     /// The ID of the [assistant](https://platform.openai.com/docs/api-reference/assistants) to use to execute this run.
     pub assistant_id: String,
 
@@ -33,7 +33,7 @@ pub struct CreateRunsRequest {
     pub metadata: BTreeMap<String, String>,
 }
 
-impl CreateRunsRequest {
+impl CreateRunRequest {
     /// Create a new request with the given assistant ID and model.
     pub fn for_assistant(assistant_id: String) -> Self {
         Self {
@@ -56,7 +56,7 @@ mod tests {
 
     #[test]
     fn serializes_request_correctly() {
-        let request = CreateRunsRequest {
+        let request = CreateRunRequest {
             assistant_id: "assistant-id".to_string(),
             model: Some(ChatModel::GPT3_5Turbo0125),
             instructions: Some("Test Assistant Instructions".to_string()),

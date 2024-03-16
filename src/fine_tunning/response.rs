@@ -4,7 +4,7 @@ use super::Status;
 
 /// List your organization's fine-tuning jobs
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct FineTuningJobListResponse {
+pub struct ListFineTuningJobResponse {
     /// The object type, which is always "list".
     pub object: String,
 

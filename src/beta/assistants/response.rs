@@ -6,7 +6,7 @@ use crate::{assistants_common::AssistantTool, common::ChatModel};
 
 /// A list of assistants.
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
-pub struct AssistantListResponse {
+pub struct ListAssistantsResponse {
     /// The object type, which is always list.
     pub object: String,
 

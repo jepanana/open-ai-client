@@ -17,14 +17,14 @@ impl<'a> ModelsHandler<'a> {
     }
 
     /// Lists the currently available models, and provides basic information about each one such as the owner and availability.
-    pub async fn list(&self) -> Result<ListResponse, OpenAIError> {
+    pub async fn list_models(&self) -> Result<ListResponse, OpenAIError> {
         let response = self.client.send(MODEL_URL, reqwest::Method::GET).await;
 
         Ok(response?.json().await?)
     }
 
     /// Retrieves a model instance, providing basic information about the model such as the owner and permissioning.
-    pub async fn retrieve<S: Into<String>>(
+    pub async fn retrieve_model<S: Into<String>>(
         &self,
         model: S,
     ) -> Result<ModelObjectResponse, OpenAIError> {
@@ -35,7 +35,10 @@ impl<'a> ModelsHandler<'a> {
     }
 
     /// Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.
-    pub async fn delete<S: Into<String>>(&self, model: S) -> Result<(), OpenAIError> {
+    pub async fn delete_fine_tunned_model<S: Into<String>>(
+        &self,
+        model: S,
+    ) -> Result<(), OpenAIError> {
         let path = format!("{}/{}", MODEL_URL, model.into());
         let _ = self.client.send(&path, reqwest::Method::DELETE).await;
 

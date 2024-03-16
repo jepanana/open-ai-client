@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Deleted file response.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct FilesDeleteResponse {
+pub struct DeleteFileResponse {
     /// Deleted file id
     pub id: String,
 
@@ -26,9 +26,9 @@ mod tests {
           "deleted": true
         });
 
-        let response: FilesDeleteResponse = serde_json::from_value(json).unwrap();
+        let response: DeleteFileResponse = serde_json::from_value(json).unwrap();
 
-        let expectation = FilesDeleteResponse {
+        let expectation = DeleteFileResponse {
             id: "file-abc123".to_string(),
             object: "file".to_string(),
             deleted: true,

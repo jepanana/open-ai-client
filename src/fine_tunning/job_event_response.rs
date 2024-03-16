@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Get status updates for a fine-tuning job.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct FineTunningJobEventListResponse {
+pub struct ListFineTunningJobEventResponse {
     /// The object type, which is always "list".
     pub object: String,
 

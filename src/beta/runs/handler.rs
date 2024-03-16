@@ -6,8 +6,8 @@ use crate::{
 };
 
 use super::{
-    CreateRunsRequest, CreateThreadAndRunRequest, ListRunsResponse, ListRunsStepsResponse,
-    ModifyRunsRequest, RunsResponse, RunsStepResponse, SubmitToolsRequest,
+    CreateRunRequest, CreateThreadAndRunRequest, ListRunsResponse, ListRunsStepsResponse,
+    ModifyRunRequest, RunsResponse, RunsStepResponse, SubmitToolsRequest,
 };
 
 const THREADS_URL: &str = "/v1/threads";
@@ -27,7 +27,7 @@ impl<'a> RunsHandler<'a> {
     pub async fn create_run<S: Into<String>>(
         &self,
         thread_id: S,
-        request: CreateRunsRequest,
+        request: CreateRunRequest,
     ) -> Result<RunsResponse, OpenAIError> {
         let url = format!("{}/{}/runs", THREADS_URL, thread_id.into());
         let response = self.client.send_body(request, &url, Method::POST).await;
@@ -119,7 +119,7 @@ impl<'a> RunsHandler<'a> {
         &self,
         thread_id: S,
         run_id: S,
-        request: ModifyRunsRequest,
+        request: ModifyRunRequest,
     ) -> Result<RunsResponse, OpenAIError> {
         let url = format!(
             "{}/{}/runs/{}",

@@ -1,10 +1,10 @@
 use open_ai_client::{
-    embeddings::{EmbeddingInput, EmbeddingRequest},
+    embeddings::{CreateEmbeddingsRequest, EmbeddingInput},
     EmbeddingModel, OpenAIClient,
 };
 
 pub async fn embeddings_test(client: OpenAIClient) {
-    let request = EmbeddingRequest {
+    let request = CreateEmbeddingsRequest {
         model: EmbeddingModel::TextEmbeddingAda002,
         input: EmbeddingInput::Single("The food was delicious.".to_string()),
         ..Default::default()

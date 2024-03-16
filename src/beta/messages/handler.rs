@@ -6,8 +6,8 @@ use crate::{
 };
 
 use super::{
-    CreateMessageRequest, MessageResponse, MessagesFileListResponse, MessagesFileResponse,
-    MessagesListResponse, ModifyMessagesRequest,
+    CreateMessageRequest, ListMessagesFileResponse, ListMessagesResponse, MessageResponse,
+    MessagesFileResponse, ModifyMessagesRequest,
 };
 
 const THREADS_URL: &str = "/v1/threads";
@@ -44,7 +44,7 @@ impl<'a> MessagesHandler<'a> {
         _order: Option<SortingOrder>,
         _after: Option<String>,
         _before: Option<String>,
-    ) -> Result<MessagesListResponse, OpenAIError> {
+    ) -> Result<ListMessagesResponse, OpenAIError> {
         let url = format!("{}/{}/messages", THREADS_URL, thread_id.into());
 
         let response = self.client.send(&url, Method::GET).await;
@@ -61,7 +61,7 @@ impl<'a> MessagesHandler<'a> {
         _order: Option<SortingOrder>,
         _after: Option<String>,
         _before: Option<String>,
-    ) -> Result<MessagesFileListResponse, OpenAIError> {
+    ) -> Result<ListMessagesFileResponse, OpenAIError> {
         let url = format!(
             "{}/{}/messages/{}/files",
             THREADS_URL,

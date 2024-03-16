@@ -1,7 +1,11 @@
 use std::collections::BTreeMap;
 
 use open_ai_client::{
-    assistants::CreateAssistantRequest, assistants_common::ThreadMessage, runs::{CreateRunsRequest, CreateThreadAndRunRequest, ModifyRunsRequest, RunStatus}, threads::CreateThreadRequest, ChatModel, OpenAIClient
+    assistants::CreateAssistantRequest,
+    assistants_common::ThreadMessage,
+    runs::{CreateRunRequest, CreateThreadAndRunRequest, ModifyRunRequest, RunStatus},
+    threads::CreateThreadRequest,
+    ChatModel, OpenAIClient,
 };
 
 pub async fn runs_test(client: OpenAIClient) {
@@ -54,7 +58,7 @@ async fn create_thread(client: &OpenAIClient) -> String {
 }
 
 async fn create_run(client: &OpenAIClient, assistant_id: &str, thread_id: &str) -> String {
-    let request = CreateRunsRequest::for_assistant(assistant_id.to_string());
+    let request = CreateRunRequest::for_assistant(assistant_id.to_string());
     let result = client.runs().create_run(thread_id, request).await.unwrap();
 
     assert!(result.object == "thread.run");
@@ -129,7 +133,7 @@ async fn modify_run(client: &OpenAIClient, thread_id: &str, run_id: &str) {
         map
     };
 
-    let request = ModifyRunsRequest::with_metadata(metadata);
+    let request = ModifyRunRequest::with_metadata(metadata);
     let result = client
         .runs()
         .modify_run(thread_id, run_id, request)
