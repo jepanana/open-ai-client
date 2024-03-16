@@ -149,6 +149,28 @@ pub enum ChatModel {
     GPT4_32k0314,
 }
 
+impl Display for ChatModel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ChatModel::GPT3_5Turbo0125 => write!(f, "gpt-3.5-turbo-0125"),
+            ChatModel::GPT3_5Turbo => write!(f, "gpt-3.5-turbo"),
+            ChatModel::GPT3_5Turbo16k => write!(f, "gpt-3.5-turbo-16k"),
+            ChatModel::GPT3_5TurboInstinct => write!(f, "gpt-3.5-turbo-instruct"),
+            ChatModel::GPT3_5Turbo0613 => write!(f, "gpt-3.5-turbo-0613"),
+            ChatModel::GPT3_5Turbo16k0613 => write!(f, "gpt-3.5-turbo-16k-0613"),
+            ChatModel::GPT3_5Turbo0301 => write!(f, "gpt-3.5-turbo-0301"),
+            ChatModel::GPT4_1106Preview => write!(f, "gpt-4-1106-preview"),
+            ChatModel::Gpt4VisionPreview => write!(f, "gpt-4-vision-preview"),
+            ChatModel::GPT4 => write!(f, "gpt-4"),
+            ChatModel::GPT4_32k => write!(f, "gpt-4-32k"),
+            ChatModel::GPT4_0613 => write!(f, "gpt-4-0613"),
+            ChatModel::GPT4_32k0613 => write!(f, "gpt-4-32k-0613"),
+            ChatModel::GPT4_0314 => write!(f, "gpt-4-0314"),
+            ChatModel::GPT4_32k0314 => write!(f, "gpt-4-32k-0314"),
+        }
+    }
+}
+
 /// Embedding model options
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub enum EmbeddingModel {

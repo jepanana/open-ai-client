@@ -12,7 +12,7 @@ use super::{ChatResponseFormat, Tool, ToolChoice};
 pub struct CreateChatCompletionRequest {
     /// ID of the model to use. See the [model endpoint compatibility](https://platform.openai.com/docs/models/model-endpoint-compatibility)
     /// table for details on which models work with the Chat API.
-    pub model: ChatModel,
+    pub model: String,
 
     /// A list of messages comprising the conversation so far.
     /// [Example Python code](https://cookbook.openai.com/examples/how_to_format_inputs_to_chatgpt_models).
@@ -146,7 +146,7 @@ impl CreateChatCompletionRequest {
 
     /// Sets the model to use for the request.
     pub fn set_model(mut self, model: ChatModel) -> Self {
-        self.model = model;
+        self.model = model.to_string();
         self
     }
 
@@ -259,7 +259,7 @@ mod tests {
     #[test]
     fn serializes_request_correctly() {
         let request = CreateChatCompletionRequest {
-            model: ChatModel::GPT3_5Turbo,
+            model: ChatModel::GPT3_5Turbo.to_string(),
             messages: vec![
                 ChatRequestMessage {
                     role: MessageRole::System,
