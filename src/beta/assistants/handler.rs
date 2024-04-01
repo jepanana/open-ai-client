@@ -1,9 +1,8 @@
 use reqwest::Method;
 
 use crate::{
-    assistants_common::DeletionStatus,
-    base_client::BaseClient,
-    common::{OpenAIError, SortingOrder},
+    assistants_common::DeletionStatus, base_client::BaseClient, common::OpenAIError,
+    OpenAIQueryParameters, OpenAIRequest,
 };
 
 use super::{
@@ -29,10 +28,10 @@ impl<'a> AssistantsHandler<'a> {
         &self,
         request: CreateAssistantRequest,
     ) -> Result<AssistantsResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_body(request, ASSISTANTS_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, ASSISTANTS_URL.to_string(), request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -45,7 +44,9 @@ impl<'a> AssistantsHandler<'a> {
         request: CreateAssistantFileRequest,
     ) -> Result<AssistantFileResponse, OpenAIError> {
         let url = format!("{}/{}/files", ASSISTANTS_URL, assistant_id.into());
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -53,12 +54,12 @@ impl<'a> AssistantsHandler<'a> {
     /// Returns a list of assistants.
     pub async fn list_assistants(
         &self,
-        _limit: Option<u32>,
-        _order: Option<SortingOrder>,
-        _after: Option<String>,
-        _before: Option<String>,
+        parameters: OpenAIQueryParameters,
     ) -> Result<ListAssistantsResponse, OpenAIError> {
-        let response = self.client.send(ASSISTANTS_URL, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, ASSISTANTS_URL.to_string())
+            .with_query_parameters(parameters);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -67,13 +68,13 @@ impl<'a> AssistantsHandler<'a> {
     pub async fn list_assistants_file<S: Into<String>>(
         &self,
         assistant_id: S,
-        _limit: Option<u32>,
-        _order: Option<SortingOrder>,
-        _after: Option<String>,
-        _before: Option<String>,
+        parameters: OpenAIQueryParameters,
     ) -> Result<ListAssistantsFilesResponse, OpenAIError> {
         let url = format!("{}/{}/files", ASSISTANTS_URL, assistant_id.into());
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request =
+            OpenAIRequest::<()>::new(Method::GET, url).with_query_parameters(parameters);
+
+        let response = self.client.send(openai_request).await;
         Ok(response?.json().await?)
     }
 
@@ -83,7 +84,9 @@ impl<'a> AssistantsHandler<'a> {
         assistant_id: S,
     ) -> Result<AssistantsResponse, OpenAIError> {
         let url = format!("{}/{}", ASSISTANTS_URL, assistant_id.into());
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -100,8 +103,9 @@ impl<'a> AssistantsHandler<'a> {
             assistant_id.into(),
             file_id.into()
         );
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
 
-        let response = self.client.send(&url, Method::GET).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -113,8 +117,9 @@ impl<'a> AssistantsHandler<'a> {
         request: ModifyAssistantRequest,
     ) -> Result<AssistantsResponse, OpenAIError> {
         let url = format!("{}/{}", ASSISTANTS_URL, assistant_id.into());
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
 
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -125,8 +130,9 @@ impl<'a> AssistantsHandler<'a> {
         assistant_id: S,
     ) -> Result<DeletionStatus, OpenAIError> {
         let url = format!("{}/{}", ASSISTANTS_URL, assistant_id.into());
+        let openai_request = OpenAIRequest::<()>::new(Method::DELETE, url);
 
-        let response = self.client.send(&url, Method::DELETE).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -143,8 +149,9 @@ impl<'a> AssistantsHandler<'a> {
             assistant_id.into(),
             file_id.into()
         );
+        let openai_request = OpenAIRequest::<()>::new(Method::DELETE, url);
 
-        let response = self.client.send(&url, Method::DELETE).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }

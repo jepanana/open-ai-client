@@ -1,6 +1,6 @@
 use reqwest::Method;
 
-use crate::{base_client::BaseClient, common::OpenAIError};
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIRequest};
 
 use super::{CreateEmbeddingsRequest, EmbeddingResponse};
 
@@ -22,10 +22,10 @@ impl<'a> EmbeddingsHandler<'a> {
         &self,
         request: CreateEmbeddingsRequest,
     ) -> Result<EmbeddingResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_body(request, EMBEDDING_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, EMBEDDING_URL.to_string(), request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }

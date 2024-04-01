@@ -1,4 +1,6 @@
-use crate::{base_client::BaseClient, common::OpenAIError};
+use reqwest::Method;
+
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIRequest};
 
 use super::{request::CreateModerationRequest, response::CreateResponse};
 
@@ -21,10 +23,10 @@ impl<'a> ModerationsHandler<'a> {
         &self,
         request: CreateModerationRequest,
     ) -> Result<CreateResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_body(request, MODERATION_URL, reqwest::Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, MODERATION_URL.to_string(), request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }

@@ -1,6 +1,6 @@
 use reqwest::Method;
 
-use crate::{base_client::BaseClient, common::OpenAIError};
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIRequest};
 
 use super::{
     CreateImageEditRequest, CreateImageRequest, CreateImageVariationRequest, ImageResponse,
@@ -26,10 +26,10 @@ impl<'a> ImagesHandler<'a> {
         &self,
         request: CreateImageRequest,
     ) -> Result<ImageResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_body(request, IMAGES_GENERATION_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, IMAGES_GENERATION_URL.to_string(), request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -39,10 +39,10 @@ impl<'a> ImagesHandler<'a> {
         &self,
         request: CreateImageEditRequest,
     ) -> Result<ImageResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_form(request, IMAGES_EDIT_IMAGES_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_form(Method::POST, IMAGES_EDIT_IMAGES_URL.to_string(), request);
+
+        let response = self.client.send_form(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -52,10 +52,10 @@ impl<'a> ImagesHandler<'a> {
         &self,
         request: CreateImageVariationRequest,
     ) -> Result<ImageResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_form(request, IMAGES_VARIATIONS_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_form(Method::POST, IMAGES_VARIATIONS_URL.to_string(), request);
+
+        let response = self.client.send_form(openai_request).await;
 
         Ok(response?.json().await?)
     }

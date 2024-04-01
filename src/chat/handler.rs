@@ -3,6 +3,7 @@ use reqwest::Method;
 use crate::{
     base_client::BaseClient,
     common::{OpenAIError, OpenAIStream},
+    OpenAIRequest,
 };
 
 use super::{ChatCompletionResponse, ChatCompletionStreamResponse, CreateChatCompletionRequest};
@@ -25,10 +26,10 @@ impl<'a> ChatHandler<'a> {
         &self,
         request: CreateChatCompletionRequest,
     ) -> Result<ChatCompletionResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_body(request, CHAT_COMPLETION_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, CHAT_COMPLETION_URL.to_string(), request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -38,10 +39,10 @@ impl<'a> ChatHandler<'a> {
         &self,
         request: CreateChatCompletionRequest,
     ) -> Result<OpenAIStream<ChatCompletionStreamResponse>, OpenAIError> {
-        let response = self
-            .client
-            .create_stream(request, CHAT_COMPLETION_URL, Method::POST)
-            .await?;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, CHAT_COMPLETION_URL.to_string(), request);
+
+        let response = self.client.create_stream(openai_request).await?;
 
         Ok(OpenAIStream::new(response).await)
     }
