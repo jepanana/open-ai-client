@@ -1,9 +1,6 @@
 use reqwest::Method;
 
-use crate::{
-    base_client::BaseClient,
-    common::{OpenAIError, SortingOrder},
-};
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIQueryParameters, OpenAIRequest};
 
 use super::{
     CreateRunRequest, CreateThreadAndRunRequest, ListRunsResponse, ListRunsStepsResponse,
@@ -30,7 +27,9 @@ impl<'a> RunsHandler<'a> {
         request: CreateRunRequest,
     ) -> Result<RunsResponse, OpenAIError> {
         let url = format!("{}/{}/runs", THREADS_URL, thread_id.into());
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -41,7 +40,9 @@ impl<'a> RunsHandler<'a> {
         request: CreateThreadAndRunRequest,
     ) -> Result<RunsResponse, OpenAIError> {
         let url = format!("{}/runs", THREADS_URL);
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -50,13 +51,13 @@ impl<'a> RunsHandler<'a> {
     pub async fn list_runs<S: Into<String>>(
         &self,
         thread_id: S,
-        _limit: Option<u32>,
-        _order: Option<SortingOrder>,
-        _after: Option<String>,
-        _before: Option<String>,
+        parameters: OpenAIQueryParameters,
     ) -> Result<ListRunsResponse, OpenAIError> {
         let url = format!("{}/{}/runs", THREADS_URL, thread_id.into());
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request =
+            OpenAIRequest::<()>::new(Method::POST, url).with_query_parameters(parameters);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -73,7 +74,9 @@ impl<'a> RunsHandler<'a> {
             thread_id.into(),
             run_id.into()
         );
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -90,7 +93,9 @@ impl<'a> RunsHandler<'a> {
             thread_id.into(),
             run_id.into()
         );
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -109,7 +114,9 @@ impl<'a> RunsHandler<'a> {
             run_id.into(),
             step_id.into()
         );
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -127,7 +134,9 @@ impl<'a> RunsHandler<'a> {
             thread_id.into(),
             run_id.into()
         );
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -147,7 +156,9 @@ impl<'a> RunsHandler<'a> {
             thread_id.into(),
             run_id.into()
         );
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -164,7 +175,9 @@ impl<'a> RunsHandler<'a> {
             thread_id.into(),
             run_id.into()
         );
-        let response = self.client.send(&url, Method::POST).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }

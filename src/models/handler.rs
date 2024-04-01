@@ -1,4 +1,6 @@
-use crate::{base_client::BaseClient, common::OpenAIError};
+use reqwest::Method;
+
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIRequest};
 
 use super::{ListResponse, ModelObjectResponse};
 
@@ -18,7 +20,9 @@ impl<'a> ModelsHandler<'a> {
 
     /// Lists the currently available models, and provides basic information about each one such as the owner and availability.
     pub async fn list_models(&self) -> Result<ListResponse, OpenAIError> {
-        let response = self.client.send(MODEL_URL, reqwest::Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, MODEL_URL.to_string());
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -28,8 +32,10 @@ impl<'a> ModelsHandler<'a> {
         &self,
         model: S,
     ) -> Result<ModelObjectResponse, OpenAIError> {
-        let path = format!("{}/{}", MODEL_URL, model.into());
-        let response = self.client.send(&path, reqwest::Method::GET).await;
+        let url = format!("{}/{}", MODEL_URL, model.into());
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -39,8 +45,10 @@ impl<'a> ModelsHandler<'a> {
         &self,
         model: S,
     ) -> Result<(), OpenAIError> {
-        let path = format!("{}/{}", MODEL_URL, model.into());
-        let _ = self.client.send(&path, reqwest::Method::DELETE).await;
+        let url = format!("{}/{}", MODEL_URL, model.into());
+        let openai_request = OpenAIRequest::<()>::new(Method::DELETE, url);
+
+        let _ = self.client.send(openai_request).await;
 
         Ok(())
     }

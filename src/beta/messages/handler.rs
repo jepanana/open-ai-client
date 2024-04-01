@@ -1,9 +1,6 @@
 use reqwest::Method;
 
-use crate::{
-    base_client::BaseClient,
-    common::{OpenAIError, SortingOrder},
-};
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIQueryParameters, OpenAIRequest};
 
 use super::{
     CreateMessageRequest, ListMessagesFileResponse, ListMessagesResponse, MessageResponse,
@@ -30,8 +27,9 @@ impl<'a> MessagesHandler<'a> {
         request: CreateMessageRequest,
     ) -> Result<MessageResponse, OpenAIError> {
         let url = format!("{}/{}/messages", THREADS_URL, thread_id.into());
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
 
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -40,14 +38,13 @@ impl<'a> MessagesHandler<'a> {
     pub async fn list_messages<S: Into<String>>(
         &self,
         thread_id: S,
-        _limit: Option<u32>,
-        _order: Option<SortingOrder>,
-        _after: Option<String>,
-        _before: Option<String>,
+        parameters: OpenAIQueryParameters,
     ) -> Result<ListMessagesResponse, OpenAIError> {
         let url = format!("{}/{}/messages", THREADS_URL, thread_id.into());
+        let openai_request =
+            OpenAIRequest::<()>::new(Method::GET, url).with_query_parameters(parameters);
 
-        let response = self.client.send(&url, Method::GET).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -57,10 +54,7 @@ impl<'a> MessagesHandler<'a> {
         &self,
         thread_id: S,
         message_id: S,
-        _limit: Option<u32>,
-        _order: Option<SortingOrder>,
-        _after: Option<String>,
-        _before: Option<String>,
+        parameters: OpenAIQueryParameters,
     ) -> Result<ListMessagesFileResponse, OpenAIError> {
         let url = format!(
             "{}/{}/messages/{}/files",
@@ -68,8 +62,10 @@ impl<'a> MessagesHandler<'a> {
             thread_id.into(),
             message_id.into()
         );
+        let openai_request =
+            OpenAIRequest::<()>::new(Method::GET, url).with_query_parameters(parameters);
 
-        let response = self.client.send(&url, Method::GET).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -86,8 +82,9 @@ impl<'a> MessagesHandler<'a> {
             thread_id.into(),
             message_id.into()
         );
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
 
-        let response = self.client.send(&url, Method::GET).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -106,8 +103,10 @@ impl<'a> MessagesHandler<'a> {
             message_id.into(),
             file_id.into()
         );
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
 
-        let response = self.client.send(&url, Method::GET).await;
+        let response = self.client.send(openai_request).await;
+
         Ok(response?.json().await?)
     }
 
@@ -124,8 +123,9 @@ impl<'a> MessagesHandler<'a> {
             thread_id.into(),
             message_id.into()
         );
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
 
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }

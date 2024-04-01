@@ -7,7 +7,7 @@ use open_ai_client::{
 
 pub async fn chat_completion_test(client: OpenAIClient) {
     let request = CreateChatCompletionRequest {
-        model: ChatModel::GPT3_5Turbo,
+        model: ChatModel::GPT3_5Turbo.to_string(),
         messages: vec![
             ChatRequestMessage {
                 role: MessageRole::System,
@@ -32,7 +32,7 @@ pub async fn chat_completion_test(client: OpenAIClient) {
 
 pub async fn _chat_completion_streaming_test(client: OpenAIClient) {
     let request = CreateChatCompletionRequest {
-        model: ChatModel::GPT3_5Turbo,
+        model: ChatModel::GPT3_5Turbo.to_string(),
         stream: Some(true),
         messages: vec![
             ChatRequestMessage {

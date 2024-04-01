@@ -1,6 +1,6 @@
 use reqwest::Method;
 
-use crate::{base_client::BaseClient, common::OpenAIError};
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIQueryParameters, OpenAIRequest};
 
 use super::{
     CreateFineTunningJobRequest, FineTuningJobResponse, ListFineTuningJobResponse,
@@ -27,10 +27,10 @@ impl<'a> FineTuningHandler<'a> {
         &self,
         request: CreateFineTunningJobRequest,
     ) -> Result<FineTuningJobResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_body(request, FINE_TUNNING_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, FINE_TUNNING_URL.to_string(), request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -38,10 +38,12 @@ impl<'a> FineTuningHandler<'a> {
     /// List your organization's fine-tuning jobs
     pub async fn list_fine_tunning_jobs<S: Into<String>>(
         &self,
-        _after: S,
-        _limit: u32,
+        parameters: OpenAIQueryParameters,
     ) -> Result<ListFineTuningJobResponse, OpenAIError> {
-        let response = self.client.send(FINE_TUNNING_URL, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, FINE_TUNNING_URL.to_string())
+            .with_query_parameters(parameters);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -50,9 +52,13 @@ impl<'a> FineTuningHandler<'a> {
     pub async fn list_fine_tunning_job_events<S: Into<String>>(
         &self,
         job_id: S,
+        parameters: OpenAIQueryParameters,
     ) -> Result<ListFineTunningJobEventResponse, OpenAIError> {
         let url = format!("{}/{}/events", FINE_TUNNING_URL, job_id.into());
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request =
+            OpenAIRequest::<()>::new(Method::GET, url).with_query_parameters(parameters);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -63,7 +69,9 @@ impl<'a> FineTuningHandler<'a> {
         job_id: S,
     ) -> Result<FineTuningJobResponse, OpenAIError> {
         let url = format!("{}/{}", FINE_TUNNING_URL, job_id.into());
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -74,7 +82,9 @@ impl<'a> FineTuningHandler<'a> {
         job_id: S,
     ) -> Result<FineTuningJobResponse, OpenAIError> {
         let url = format!("{}/{}/cancel", FINE_TUNNING_URL, job_id.into());
-        let response = self.client.send(&url, Method::POST).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }

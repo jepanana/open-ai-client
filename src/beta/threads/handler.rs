@@ -1,6 +1,8 @@
 use reqwest::Method;
 
-use crate::{assistants_common::DeletionStatus, base_client::BaseClient, common::OpenAIError};
+use crate::{
+    assistants_common::DeletionStatus, base_client::BaseClient, common::OpenAIError, OpenAIRequest,
+};
 
 use super::{CreateThreadRequest, ModifyThreadRequest, ThreadsResponse};
 
@@ -22,10 +24,10 @@ impl<'a> ThreadsHandler<'a> {
         &self,
         request: CreateThreadRequest,
     ) -> Result<ThreadsResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_body(request, THREADS_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, THREADS_URL.to_string(), request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -36,7 +38,9 @@ impl<'a> ThreadsHandler<'a> {
         thread_id: S,
     ) -> Result<ThreadsResponse, OpenAIError> {
         let url = format!("{}/{}", THREADS_URL, thread_id.into());
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -48,8 +52,9 @@ impl<'a> ThreadsHandler<'a> {
         request: ModifyThreadRequest,
     ) -> Result<ThreadsResponse, OpenAIError> {
         let url = format!("{}/{}", THREADS_URL, thread_id.into());
+        let openai_request = OpenAIRequest::with_body(Method::POST, url, request);
 
-        let response = self.client.send_body(request, &url, Method::POST).await;
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -60,7 +65,9 @@ impl<'a> ThreadsHandler<'a> {
         thread_id: S,
     ) -> Result<DeletionStatus, OpenAIError> {
         let url = format!("{}/{}", THREADS_URL, thread_id.into());
-        let response = self.client.send(&url, Method::DELETE).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::DELETE, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }

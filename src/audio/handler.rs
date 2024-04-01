@@ -1,6 +1,6 @@
 use reqwest::Method;
 
-use crate::{base_client::BaseClient, common::OpenAIError};
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIRequest};
 
 use super::{
     AudioResponse, CreateSpeechRequest, CreateSpeechResponse, CreateTranscriptionRequest,
@@ -28,10 +28,10 @@ impl<'a> AudioHandler<'a> {
         &self,
         request: CreateSpeechRequest,
     ) -> Result<CreateSpeechResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_body(request, AUDIO_CREATE_SPEECH_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_body(Method::POST, AUDIO_CREATE_SPEECH_URL.to_string(), request);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(CreateSpeechResponse(response?.bytes().await?))
     }
@@ -41,10 +41,10 @@ impl<'a> AudioHandler<'a> {
         &self,
         request: CreateTranscriptionRequest,
     ) -> Result<AudioResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_form(request, AUDIO_TRANSCRIPTION_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_form(Method::POST, AUDIO_TRANSCRIPTION_URL.to_string(), request);
+
+        let response = self.client.send_form(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -54,10 +54,10 @@ impl<'a> AudioHandler<'a> {
         &self,
         request: CreateTranslationRequest,
     ) -> Result<AudioResponse, OpenAIError> {
-        let response = self
-            .client
-            .send_form(request, AUDIO_TRANSLATION_URL, Method::POST)
-            .await;
+        let openai_request =
+            OpenAIRequest::with_form(Method::POST, AUDIO_TRANSLATION_URL.to_string(), request);
+
+        let response = self.client.send_form(openai_request).await;
 
         Ok(response?.json().await?)
     }

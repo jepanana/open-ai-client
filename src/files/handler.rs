@@ -1,6 +1,6 @@
 use reqwest::Method;
 
-use crate::{base_client::BaseClient, common::OpenAIError};
+use crate::{base_client::BaseClient, common::OpenAIError, OpenAIRequest};
 
 use super::{DeleteFileResponse, FilesListResponse, FilesResponse, UploadFileRequest};
 
@@ -25,10 +25,9 @@ impl<'a> FileHandler<'a> {
     ///
     /// Please [contact us](https://help.openai.com/) if you need to increase these storage limits.
     pub async fn upload_file(&self, request: UploadFileRequest) -> Result<(), OpenAIError> {
-        let response = self
-            .client
-            .send_form(request, FILES_URL, Method::POST)
-            .await;
+        let openai_request = OpenAIRequest::with_form(Method::POST, FILES_URL.to_string(), request);
+
+        let response = self.client.send_form(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -38,7 +37,9 @@ impl<'a> FileHandler<'a> {
         &self,
         _purpose: S,
     ) -> Result<FilesListResponse, OpenAIError> {
-        let response = self.client.send(FILES_URL, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::POST, FILES_URL.to_string());
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -49,7 +50,9 @@ impl<'a> FileHandler<'a> {
         file_id: S,
     ) -> Result<FilesResponse, OpenAIError> {
         let url = format!("{}/{}", FILES_URL, file_id.into());
-        let response = self.client.send(&url, Method::GET).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -60,7 +63,9 @@ impl<'a> FileHandler<'a> {
         file_id: S,
     ) -> Result<DeleteFileResponse, OpenAIError> {
         let url = format!("{}/{}", FILES_URL, file_id.into());
-        let response = self.client.send(&url, Method::DELETE).await;
+        let openai_request = OpenAIRequest::<()>::new(Method::DELETE, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
@@ -70,8 +75,10 @@ impl<'a> FileHandler<'a> {
         &self,
         file_id: S,
     ) -> Result<String, OpenAIError> {
-        let url = &format!("{}/{}/content", FILES_URL, file_id.into());
-        let response = self.client.send(url, Method::GET).await;
+        let url = format!("{}/{}/content", FILES_URL, file_id.into());
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
+
+        let response = self.client.send(openai_request).await;
 
         Ok(response?.json().await?)
     }
