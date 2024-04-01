@@ -25,7 +25,7 @@ impl<'a> FileHandler<'a> {
     ///
     /// Please [contact us](https://help.openai.com/) if you need to increase these storage limits.
     pub async fn upload_file(&self, request: UploadFileRequest) -> Result<(), OpenAIError> {
-        let openai_request = OpenAIRequest::with_form(Method::POST, FILES_URL.to_string(), request);
+        let openai_request = OpenAIRequest::with_form(Method::GET, FILES_URL.to_string(), request);
 
         let response = self.client.send_form(openai_request).await;
 

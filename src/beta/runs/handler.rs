@@ -55,7 +55,7 @@ impl<'a> RunsHandler<'a> {
     ) -> Result<ListRunsResponse, OpenAIError> {
         let url = format!("{}/{}/runs", THREADS_URL, thread_id.into());
         let openai_request =
-            OpenAIRequest::<()>::new(Method::POST, url).with_query_parameters(parameters);
+            OpenAIRequest::<()>::new(Method::GET, url).with_query_parameters(parameters);
 
         let response = self.client.send(openai_request).await;
 
@@ -74,7 +74,7 @@ impl<'a> RunsHandler<'a> {
             thread_id.into(),
             run_id.into()
         );
-        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
 
         let response = self.client.send(openai_request).await;
 
@@ -93,7 +93,7 @@ impl<'a> RunsHandler<'a> {
             thread_id.into(),
             run_id.into()
         );
-        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
 
         let response = self.client.send(openai_request).await;
 
@@ -114,7 +114,7 @@ impl<'a> RunsHandler<'a> {
             run_id.into(),
             step_id.into()
         );
-        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
 
         let response = self.client.send(openai_request).await;
 

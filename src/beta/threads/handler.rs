@@ -38,7 +38,7 @@ impl<'a> ThreadsHandler<'a> {
         thread_id: S,
     ) -> Result<ThreadsResponse, OpenAIError> {
         let url = format!("{}/{}", THREADS_URL, thread_id.into());
-        let openai_request = OpenAIRequest::<()>::new(Method::POST, url);
+        let openai_request = OpenAIRequest::<()>::new(Method::GET, url);
 
         let response = self.client.send(openai_request).await;
 
